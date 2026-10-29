@@ -1,6 +1,6 @@
-# 兰台智报
+# Lantern
 
-<h3 align="center">智能数据报表与办公自动化平台 —— 一键生成数据报表，成册归档</h3>
+<h3 align="center">自动设计 PPT 的办公自动化平台 —— 一份 JSON，一条命令，一套成品幻灯片</h3>
 
 <p align="center">
   <img src="https://img.shields.io/badge/平台-Windows-blue?logo=windows" alt="Platform">
@@ -11,65 +11,66 @@
 
 ---
 
-**兰台智报**（Lantai Report）是面向「数据报表与分析」场景的智能报表平台：
-通过 Windows COM 自动化操控 WPS 表格，一条命令完成 **CSV 数据源 → 汇总公式 → 区域格式 → 图表插图 → XLSX/PDF 双格式导出** 的完整报表生成链路，
-并扩展 WPS 文字/演示、Zotero 学术文献管理、Photoshop/Illustrator 设计软件控制。
+**Lantern**（灯台）是以**自动设计 PPT** 为核心的办公自动化平台：
+通过 Windows COM 自动化操控 WPS 演示，**一份 JSON 数据 → 一条命令 → 成品 PPTX + PDF**，全程零手工排版、可复现、可一键改版。
+并附带 WPS 表格数据报表能力（CSV 一键生成带汇总公式与图表插图的 XLSX/PDF），扩展 Zotero 学术文献管理、Photoshop/Illustrator 设计软件控制。
 
-> 「兰台」典出古代官修档案之府，寓意数据报表经专业整理、成册归档；
-> 「智报」即智能报表 —— 让 AI Agent 替你完成重复的报表制作。
+> 「Lantern」即灯台 —— 把「设计一套 PPT」从繁琐排版变为一条命令，
+> 让 AI Agent 替你完成重复劳动，回归「用内容表达想法」的本质。
 
 ## 为什么做这个项目
 
-日常报表（周报/月报/专项报告）制作存在三座大山：
+日常办公中，策划案、汇报、方案等 PPT 制作存在三座大山：
 
-- **易出错**：手工汇总漏行、公式范围填错、数字格式不统一；
-- **不可复现**：每次操作步骤不固定，换人做出来的报表格式不一致；
-- **耗时**：一期周报手工约 1–2 小时，挤占数据分析时间。
+- **易出错**：手工排版漏页、表格错位、字号不统一，改一版牵一发动全身；
+- **不可复现**：每次操作步骤不固定，换人做出来的风格不一致；
+- **耗时**：一份策划案 PPT 手工排版约 1–2 小时，反复改稿更耗时。
 
-兰台智报的答案是：**把报表制作固化为一条命令**。
+Lantern 的答案是：**把 PPT 设计固化为一条命令**。
 WPS 在 Windows 上暴露了完整的 COM 自动化接口（与 Microsoft Office VBA 兼容），
-我们基于该接口构建了报表自动化能力：数据写入、汇总公式、区域格式、图表插图、双格式导出全链路自动化。
+我们基于该接口构建了 JSON 驱动 PPT 自动设计引擎：封面、图文、表格、红条等元素全部由数据声明，自动排版、自动出片、自动校验。
 
-## 核心场景：数据报表与分析（一键工作流）
+## 核心场景：自动设计 PPT（全自动化工作流）
 
 ```bash
-cd report_demo
-pip install pywin32 matplotlib openpyxl
-python build_report.py
+cd WPS/ppt-engine/examples
+pip install pywin32 Pillow pymupdf
+python build_from_json.py --json lantern/hiking_plan.json --out lantern/out
 ```
 
-输出（约 6–10 秒）：
+输出（约 10–20 秒，自动校验页数与内容溢出）：
 
-- `output/生产运行数据周报.xlsx` —— 双工作表（周数据 + 趋势分析），
-  含汇总公式（`=SUM()`/`=AVERAGE()`）、统一表头样式、图表插图
-- `output/生产运行数据周报.pdf` —— 每工作表一页，横向自适应，排版紧凑
+- `lantern/out/徒步团建策划案.pptx` —— WPS 演示成品，可直接放映
+- `lantern/out/徒步团建策划案.pdf` —— 每页自适应排版，紧凑出片
 
-数据源为 `data/*.csv`，替换真实数据（表头保持不变）重新运行即可复现。
+演示案例：**宁波金发新材料有限公司徒步团建活动策划案**（3 页：封面 / 行程安排 / 预算与保障）。
+改动预算、日程只需修改 JSON 数字，重新运行即得新版 —— **全自动、可复现**。
 
 ## 平台能力
 
 | 模块 | 能力 |
 |------|------|
-| `cli_anything/wps`（核心） | WPS 文字/表格/演示 CLI 操控：47 命令 + 数据报表能力（汇总公式、区域格式、列宽、图表插图、XLSX/PDF 导出） |
+| `WPS/ppt-engine`（核心新增） | **JSON 驱动 PPT 自动设计引擎**：封面/图文/表格/红条元素、多列表格自动渲染、页面溢出校验、PPTX+PDF 双格式出片 |
+| `cli_anything/wps` | WPS 文字/表格/演示 CLI 操控：47 命令 + 数据报表能力（汇总公式、区域格式、图表插图、XLSX/PDF 导出） |
 | `cli_anything/zotero` | Zotero 学术研究智能体：27 个 Skill（检索/综述/论文/审稿/期刊图表） |
 | `illustrator-harness` | Adobe Illustrator 矢量图编程式创建与编辑 |
 | `photoshop-harness` | Adobe Photoshop 位图处理：图层/选区/文本/滤镜/导出 |
-| `WPS/` | 16 个高校招生 PPT 制作案例（JSON 数据驱动），含 ppt-engine 通用 PPT 引擎 |
 
-## 数据报表能力详解（核心新增）
+## 自动设计 PPT 能力详解（核心新增）
 
-- **`calc.add_summary`**：自动生成 `SUM/AVERAGE/COUNT/MAX/MIN` 汇总行，公式范围由数据行数推导
-- **`calc.format_range`**：加粗/填充色/字体色/边框/数字格式/对齐，RRGGBB 色值自动转换
-- **`calc.set_col_width`**：列宽设置
-- **`calc.add_chart` / `calc.add_image`**：7 种图表类型；推荐 matplotlib 生成 PNG 后插图（稳定方案）
-- **`export`**：多工作表顺序保证、每表「横向 + 一页自适应」打印、XLSX/PDF 双导出
-
-详细命令见 `cli_anything/wps/skills/SKILL.md`，一键工作流见 `report_demo/README.md`。
+- **JSON 声明式设计**：`slides[]` 一段 JSON 定义整套幻灯片，元素类型含 `header / rich / gray_box / table / redbar`
+- **多列表格自动渲染**：任意列数的表格由 JSON 自动拼格（表头蓝底白字、隔行底色、首列强调），规避 WPS AddTable 边框不稳定
+- **页面溢出校验**：出片时逐页检测内容越界，`[verify] 页数=N 溢出=0` 保证成品不破版
+- **一键改版**：改 JSON 数字（预算、日程、人员）重新运行即得新版，双格式同步更新
+- **16 套高校招生 PPT 案例**：清华/北大/复旦/中科大等，含完整 build 脚本与 data.json，可直接复用为模板
 
 ## 快速上手
 
 ```bash
-# 数据报表（核心场景）
+# 自动设计 PPT（核心场景）
+cd WPS/ppt-engine/examples && python build_from_json.py --json lantern/hiking_plan.json --out lantern/out
+
+# 数据报表（附带能力）
 cd report_demo && python build_report.py
 
 # WPS 办公
@@ -87,8 +88,8 @@ cli-anything-photoshop project new banner.psd -w 1920 -h 1080
 ## 系统要求
 
 - Windows 10/11
-- WPS Office 12.0+（数据报表）/ Zotero 7+ / Adobe Illustrator 2023+ / Adobe Photoshop 2023+（可选）
-- Python 3.10+ + pywin32 + matplotlib + openpyxl
+- WPS Office 12.0+（PPT 自动设计 + 数据报表）/ Zotero 7+ / Adobe Illustrator 2023+ / Adobe Photoshop 2023+（可选）
+- Python 3.10+ + pywin32 + Pillow + pymupdf + matplotlib + openpyxl
 
 ## 许可证
 

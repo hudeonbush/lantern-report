@@ -29,6 +29,17 @@ def parts_of(lst, default_color=el.INK):
             for p in lst]
 
 
+def cell_parts(v, default_color=el.INK):
+    """把一个 JSON 单元格（str / dict / list[parts]）转为 rich parts 列表"""
+    if isinstance(v, str):
+        return [(v, default_color, False)]
+    if isinstance(v, dict):
+        return [(v.get("t", ""), hex2rgb(v.get("color"), default_color), bool(v.get("bold")))]
+    if isinstance(v, list):
+        return parts_of(v, default_color)
+    return [("", default_color, False)]
+
+
 ROUTERS = {}
 
 
@@ -95,10 +106,44 @@ def _num(s, it):
 
 @route("table")
 def _table(s, it):
-    rows = [(r[0], parts_of(r[1])) for r in it.get("rows", [])]
-    el.table_simple(s, it["box"][0], it["box"][1], it["box"][2],
-                    cols=it["cols"], header_row=it["header_row"], rows=rows,
-                    hdr_h=it.get("hdr_h", 32), row_h=it.get("row_h", 66))
+    box = it["box"]
+    x, y, w = box[0], box[1], box[2]
+    cols = it.get("cols", [])
+    headers = it.get("header_row", [])
+    hdr_h = it.get("hdr_h", 32)
+    row_h = it.get("row_h", 60)
+    rows = it.get("rows", [])
+    # 兼容 2 列旧语义：rows = [(cap, [parts]), ...]
+    old_style = all(isinstance(r, (list, tuple)) and len(r) == 2 and isinstance(r[1], list) for r in rows)
+    if old_style:
+        el.table_simple(s, x, y, w, cols=cols, header_row=headers,
+                        rows=[(str(r[0]), r[1]) for r in rows],
+                        hdr_h=hdr_h, row_h=row_h)
+        return
+    # 多列通用渲染：逐行逐列绘制（矩形拼格，规避 WPS AddTable 边框不稳定）
+    el.rect(s, x, y, w, hdr_h, fill=(32, 84, 160))
+    cx = x
+    for i, t in enumerate(headers):
+        el.txt(s, cx, y, cols[i], hdr_h, t, fs=it.get("hdr_fs", 14),
+               color=el.WHITE, bold=True, align=1)
+        cx += cols[i]
+    ry = y + hdr_h
+    for i, r in enumerate(rows):
+        el.rect(s, x, ry, w, row_h, fill=(238, 244, 252) if i % 2 == 0 else (255, 255, 255))
+        el.hline(s, x, ry, w, (196, 208, 224), 0.9)
+        cx = x
+        for j, cell in enumerate(r):
+            parts = cell_parts(cell)
+            if j == 0:
+                first_text = str(cell) if isinstance(cell, str) else parts[0][0]
+                el.txt(s, cx + 10, ry, cols[j], row_h, first_text, fs=12,
+                       color=el.BLUE, bold=True, align=1)
+            else:
+                el.rich(s, cx + 10, ry + 5, cols[j] - 20, row_h - 10, parts,
+                        fs=it.get("cell_fs", 11), align=0)
+            cx += cols[j]
+        ry += row_h
+    el.hline(s, x, ry, w, (196, 208, 224), 0.9)
 
 
 def render(deck, cfg):

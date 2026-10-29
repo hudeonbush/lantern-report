@@ -1,83 +1,99 @@
-# 兰台智报
+# Lantern
 
-<h3 align="center">智能数据报表与办公自动化平台 —— 一键生成数据报表，成册归档</h3>
+<h3 align="center">Auto-Design PPT Office Automation Platform — One JSON, One Command, One Finished Deck</h3>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/平台-Windows-blue?logo=windows" alt="Platform">
+  <img src="https://img.shields.io/badge/Platform-Windows-blue?logo=windows" alt="Platform">
   <img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" alt="Python">
-  <img src="https://img.shields.io/badge/协议-MIT-green" alt="License">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
   <img src="https://img.shields.io/badge/WPS-Office%2012.0+-red" alt="WPS">
 </p>
 
 ---
 
-**兰台智报**（Lantai Report）是面向「数据报表与分析」场景的智能报表平台：
-通过 Windows COM 自动化操控 WPS 表格，一条命令完成 **CSV 数据源 → 汇总公式 → 区域格式 → 图表插图 → XLSX/PDF 双格式导出** 的完整报表生成链路，
-并扩展 WPS 文字/演示、Zotero 学术文献管理、Photoshop/Illustrator 设计软件控制。
+**Lantern** is an office automation platform focused on **auto-designing PPT decks**:
+it drives WPS Presentation through Windows COM automation, so **one JSON file → one command → finished PPTX + PDF** —
+no manual layout, reproducible, and re-stylable in one run.
+It also ships a WPS Spreadsheet data-reporting capability (CSV → XLSX/PDF with formulas, formatting and charts) and
+extends to Zotero academic workflow and Photoshop/Illustrator design automation.
 
-> 「兰台」典出古代官修档案之府，寓意数据报表经专业整理、成册归档；
-> 「智报」即智能报表 —— 让 AI Agent 替你完成重复的报表制作。
+> "Lantern" — turn "designing a deck" from tedious layout work into one command,
+> so an AI Agent handles the repetitive part and you return to "expressing ideas with content".
 
-## 核心场景：数据报表与分析（一键工作流）
+## Why this project
+
+Everyday decks — proposals, reports, plans — face three burdens:
+
+- **Error-prone**: manual layout breaks pages, misaligns tables, mixes font sizes; one edit breaks the rest;
+- **Not reproducible**: steps vary per person, so output style is inconsistent;
+- **Slow**: a proposal deck takes 1–2 hours by hand, and revisions cost even more.
+
+Lantern's answer: **freeze PPT design into a single command**.
+WPS exposes a full COM automation interface on Windows (compatible with Microsoft Office VBA).
+We build a JSON-driven auto-design engine on top of it: cover, rich text, tables and banner elements are all
+declared in data, auto-laid-out, auto-rendered, and auto-verified.
+
+## Core scenario: Auto-design PPT (fully automated workflow)
 
 ```bash
-cd report_demo
-pip install pywin32 matplotlib openpyxl
-python build_report.py
+cd WPS/ppt-engine/examples
+pip install pywin32 Pillow pymupdf
+python build_from_json.py --json lantern/hiking_plan.json --out lantern/out
 ```
 
-输出（约 6–10 秒）：
+Output (≈10–20 s, with automatic page-count and overflow verification):
 
-- `output/生产运行数据周报.xlsx` —— 双工作表（周数据 + 趋势分析），
-  含汇总公式（`=SUM()`/`=AVERAGE()`）、统一表头样式、图表插图
-- `output/生产运行数据周报.pdf` —— 每工作表一页，横向自适应，排版紧凑
+- `lantern/out/徒步团建策划案.pptx` — finished WPS Presentation, ready to play
+- `lantern/out/徒步团建策划案.pdf` — one page per slide, compact layout
 
-数据源为 `data/*.csv`，替换真实数据（表头保持不变）重新运行即可复现。
+Demo: **Ningbo Kingfa New Material Co., Ltd. hiking team-building plan** (3 slides: cover / schedule / budget & support).
+Change a budget or schedule number in the JSON and re-run — the new deck is generated automatically, fully reproducible.
 
-## 平台能力
+## Platform capabilities
 
-| 模块 | 能力 |
-|------|------|
-| `cli_anything/wps`（核心） | WPS 文字/表格/演示 CLI 操控：47 命令 + 数据报表能力（汇总公式、区域格式、列宽、图表插图、XLSX/PDF 导出） |
-| `cli_anything/zotero` | Zotero 学术研究智能体：27 个 Skill（检索/综述/论文/审稿/期刊图表） |
-| `illustrator-harness` | Adobe Illustrator 矢量图编程式创建与编辑 |
-| `photoshop-harness` | Adobe Photoshop 位图处理：图层/选区/文本/滤镜/导出 |
-| `WPS/` | 16 个高校招生 PPT 制作案例（JSON 数据驱动），含 ppt-engine 通用 PPT 引擎 |
+| Module | Capability |
+|--------|------------|
+| `WPS/ppt-engine` (core, new) | **JSON-driven PPT auto-design engine**: cover/rich/gray-box/table/banner elements, multi-column table auto-render, overflow verification, PPTX+PDF dual export |
+| `cli_anything/wps` | WPS Writer/Calc/Presentation CLI: 47 commands + data reporting (summary formulas, range formatting, chart images, XLSX/PDF export) |
+| `cli_anything/zotero` | Zotero academic agent: 27 skills (search/review/draft/reviewer/journal figures) |
+| `illustrator-harness` | Adobe Illustrator programmatic vector creation & editing |
+| `photoshop-harness` | Adobe Photoshop bitmap processing: layers/selection/text/filter/export |
 
-## 数据报表能力详解（本次新增）
+## Auto-design PPT capabilities (new core)
 
-- **`calc.add_summary`**：自动生成 `SUM/AVERAGE/COUNT/MAX/MIN` 汇总行，公式范围由数据行数推导
-- **`calc.format_range`**：加粗/填充色/字体色/边框/数字格式/对齐，RRGGBB 色值自动转换
-- **`calc.set_col_width`**：列宽设置
-- **`calc.add_chart` / `calc.add_image`**：7 种图表类型；推荐 matplotlib 生成 PNG 后插图（稳定方案）
-- **`export`**：多工作表顺序保证、每表「横向 + 一页自适应」打印、XLSX/PDF 双导出
+- **Declarative JSON design**: one `slides[]` JSON defines the whole deck; element types include `header / rich / gray_box / table / redbar`
+- **Multi-column table auto-render**: any column count is auto-composed from JSON (blue header row, zebra rows, emphasized first column), avoiding unstable WPS AddTable borders
+- **Overflow verification**: every page is checked for out-of-bound content at export; `[verify] pages=N overflow=0` guarantees a clean deck
+- **One-run re-styling**: change numbers in JSON (budget, schedule, headcount) and re-run — both formats update together
+- **16 university-recruitment PPT cases**: Tsinghua/Peking/Fudan/USTC etc., with full build scripts and data.json, reusable as templates
 
-详细命令见 `cli_anything/wps/skills/SKILL.md`，一键工作流见 `report_demo/README.md`。
-
-## 快速上手
+## Quick start
 
 ```bash
-# 数据报表（核心场景）
+# Auto-design PPT (core)
+cd WPS/ppt-engine/examples && python build_from_json.py --json lantern/hiking_plan.json --out lantern/out
+
+# Data reporting (bundled capability)
 cd report_demo && python build_report.py
 
-# WPS 办公
-cli-anything-wps document new --type impress --name "演示"
+# WPS office
+cli-anything-wps document new --type impress --name "demo"
 cli-anything-wps export render output.pptx -p pptx
 
-# Zotero 学术
+# Zotero academic
 cli-anything-zotero skills pipeline thesis
 
-# Illustrator / Photoshop 设计
+# Illustrator / Photoshop design
 cli-anything-illustrator project new logo.ai -w 500 -h 500
 cli-anything-photoshop project new banner.psd -w 1920 -h 1080
 ```
 
-## 系统要求
+## Requirements
 
 - Windows 10/11
-- WPS Office 12.0+（数据报表）/ Zotero 7+ / Adobe Illustrator 2023+ / Adobe Photoshop 2023+（可选）
-- Python 3.10+ + pywin32 + matplotlib + openpyxl
+- WPS Office 12.0+ (PPT auto-design + data reporting) / Zotero 7+ / Adobe Illustrator 2023+ / Adobe Photoshop 2023+ (optional)
+- Python 3.10+ + pywin32 + Pillow + pymupdf + matplotlib + openpyxl
 
-## 许可证
+## License
 
-MIT（见 [LICENSE](LICENSE)）
+MIT (see [LICENSE](LICENSE))
