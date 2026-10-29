@@ -1,0 +1,143 @@
+{
+  "meta": {
+    "width": 960,
+    "height": 540,
+    "bg": "bg_green.png"
+  },
+  "slides": [
+    {
+      "header": null,
+      "items": [
+        { "type": "rect", "box": [0, 0, 960, 10], "fill": "#2A7A5C" },
+        { "type": "txt", "box": [60, 130, 840, 96], "text": "春日山野 · 徒步同行", "fs": 46, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [60, 226, 840, 40], "text": "宁波金发新材料有限公司 · 徒步团建活动策划案", "fs": 21, "color": "#3A6B50", "align": 0 },
+        { "type": "txt", "box": [60, 272, 840, 32], "text": "由 Lantern 全自动化引擎生成 · 数据驱动 · 一行 JSON 一套成品", "fs": 13.5, "color": "#7A9486", "align": 0 },
+        { "type": "rect", "box": [60, 330, 200, 34], "fill": "#E8F4EC", "line": "#7CBFA0" },
+        { "type": "txt", "box": [60, 330, 200, 34], "text": "活动时间", "fs": 13, "color": "#1F5E44", "bold": true, "align": 1 },
+        { "type": "rect", "box": [276, 330, 200, 34], "fill": "#E8F4EC", "line": "#7CBFA0" },
+        { "type": "txt", "box": [276, 330, 200, 34], "text": "活动地点", "fs": 13, "color": "#1F5E44", "bold": true, "align": 1 },
+        { "type": "rect", "box": [492, 330, 200, 34], "fill": "#E8F4EC", "line": "#7CBFA0" },
+        { "type": "txt", "box": [492, 330, 200, 34], "text": "参与人员", "fs": 13, "color": "#1F5E44", "bold": true, "align": 1 },
+        { "type": "rect", "box": [708, 330, 200, 34], "fill": "#E8F4EC", "line": "#7CBFA0" },
+        { "type": "txt", "box": [708, 330, 200, 34], "text": "徒步里程", "fs": 13, "color": "#1F5E44", "bold": true, "align": 1 },
+        { "type": "txt", "box": [60, 368, 200, 30], "text": "4月中旬某周六", "fs": 13, "color": "#3A5A48", "align": 1 },
+        { "type": "txt", "box": [276, 368, 200, 30], "text": "市郊生态绿道", "fs": 13, "color": "#3A5A48", "align": 1 },
+        { "type": "txt", "box": [492, 368, 200, 30], "text": "部门全员及家属", "fs": 13, "color": "#3A5A48", "align": 1 },
+        { "type": "txt", "box": [708, 368, 200, 30], "text": "约 8 公里环线", "fs": 13, "color": "#3A5A48", "align": 1 },
+        { "type": "grad_bar", "img": "bar_green.png", "box": [0, 470, 960, 70], "text": "本方案由 Lantern 全自动生成 —— 一行 JSON，一套成品", "fs": 17, "color": "#FFFFFF" }
+      ]
+    },
+    {
+      "header": { "sec": "01 · 活动概览", "title": "走进春天，与团队同行", "logo": "Lantern" },
+      "items": [
+        { "type": "rect", "box": [60, 92, 440, 92], "fill": "#FFFFFF", "line": "#D8EBDD" },
+        { "type": "rect", "box": [74, 108, 6, 36], "fill": "#348E6E" },
+        { "type": "txt", "box": [92, 102, 160, 26], "text": "活动主题", "fs": 15, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [92, 130, 390, 44], "text": "春日山野 · 徒步同行——以自然徒步凝聚团队，释放工作压力", "fs": 12.5, "color": "#4A6655", "align": 0 },
+        { "type": "rect", "box": [60, 196, 440, 92], "fill": "#FFFFFF", "line": "#D8EBDD" },
+        { "type": "rect", "box": [74, 212, 6, 36], "fill": "#348E6E" },
+        { "type": "txt", "box": [92, 206, 160, 26], "text": "活动时间", "fs": 15, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [92, 234, 390, 44], "text": "2026 年 4 月中旬某周六 08:00-17:00（暂定，视天气调整）", "fs": 12.5, "color": "#4A6655", "align": 0 },
+        { "type": "rect", "box": [60, 300, 440, 92], "fill": "#FFFFFF", "line": "#D8EBDD" },
+        { "type": "rect", "box": [74, 316, 6, 36], "fill": "#348E6E" },
+        { "type": "txt", "box": [92, 310, 160, 26], "text": "活动地点", "fs": 15, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [92, 338, 390, 44], "text": "市郊生态绿道（约 8 公里环线，难度适中，适合全家参与）", "fs": 12.5, "color": "#4A6655", "align": 0 },
+        { "type": "rect", "box": [60, 404, 440, 92], "fill": "#FFFFFF", "line": "#D8EBDD" },
+        { "type": "rect", "box": [74, 420, 6, 36], "fill": "#348E6E" },
+        { "type": "txt", "box": [92, 414, 160, 26], "text": "参与人员", "fs": 15, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [92, 442, 390, 44], "text": "部门全员及家属，预计 30-40 人，按报名分组出行", "fs": 12.5, "color": "#4A6655", "align": 0 },
+        { "type": "pic", "img": "hike_p1.png", "box": [530, 100, 380, 285], "fit": true },
+        { "type": "txt", "box": [530, 392, 380, 30], "text": "成品示例：Lantern 生成的一页策划案", "fs": 12, "color": "#7A9486", "align": 1 }
+      ]
+    },
+    {
+      "header": { "sec": "02 · 行程安排", "title": "从清晨出发，到满载而归", "logo": "Lantern" },
+      "items": [
+        { "type": "hline", "x": 96, "y": 186, "w": 768, "color": "#7CBFA0", "wt": 2.0 },
+        { "type": "num_circle", "box": [80, 168, 40], "text": "1", "fill": "#348E6E", "fs": 15 },
+        { "type": "num_circle", "box": [260, 168, 40], "text": "2", "fill": "#348E6E", "fs": 15 },
+        { "type": "num_circle", "box": [440, 168, 40], "text": "3", "fill": "#348E6E", "fs": 15 },
+        { "type": "num_circle", "box": [620, 168, 40], "text": "4", "fill": "#348E6E", "fs": 15 },
+        { "type": "num_circle", "box": [800, 168, 40], "text": "5", "fill": "#E2701E", "fs": 15 },
+        { "type": "txt", "box": [45, 228, 110, 32], "text": "07:30", "fs": 20, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [225, 228, 110, 32], "text": "09:00", "fs": 20, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [405, 228, 110, 32], "text": "09:30", "fs": 20, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [585, 228, 110, 32], "text": "12:00", "fs": 20, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [765, 228, 110, 32], "text": "14:30", "fs": 20, "color": "#E2701E", "bold": true, "align": 0 },
+        { "type": "txt", "box": [45, 264, 150, 28], "text": "集合出发", "fs": 15, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [225, 264, 150, 28], "text": "抵达绿道", "fs": 15, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [405, 264, 150, 28], "text": "徒步登山", "fs": 15, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [585, 264, 150, 28], "text": "山顶路餐", "fs": 15, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [765, 264, 150, 28], "text": "返程归队", "fs": 15, "color": "#E2701E", "bold": true, "align": 0 },
+        { "type": "txt", "box": [45, 296, 160, 44], "text": "公司门口集合\n大巴 2 辆", "fs": 12, "color": "#5A6B60", "align": 0 },
+        { "type": "txt", "box": [225, 296, 160, 44], "text": "起点合影\n安全讲解", "fs": 12, "color": "#5A6B60", "align": 0 },
+        { "type": "txt", "box": [405, 296, 160, 44], "text": "双线路可选\n领队带队", "fs": 12, "color": "#5A6B60", "align": 0 },
+        { "type": "txt", "box": [585, 296, 160, 44], "text": "餐包补给\n稍作休整", "fs": 12, "color": "#5A6B60", "align": 0 },
+        { "type": "txt", "box": [765, 296, 160, 44], "text": "清点人数\n安全返回", "fs": 12, "color": "#5A6B60", "align": 0 },
+        { "type": "grad_bar", "img": "bar_orange.png", "box": [60, 430, 840, 46], "text": "徒步 8 公里 · 全程 4 小时 · 双线路设计老少皆宜", "fs": 15.5 }
+      ]
+    },
+    {
+      "header": { "sec": "03 · 安全保障", "title": "安全是活动的底线", "logo": "Lantern" },
+      "items": [
+        { "type": "rect", "box": [60, 92, 430, 86], "fill": "#FFFFFF", "line": "#D8EBDD" },
+        { "type": "rect", "box": [74, 108, 6, 34], "fill": "#348E6E" },
+        { "type": "txt", "box": [92, 102, 200, 26], "text": "领队保障", "fs": 15, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [92, 130, 380, 40], "text": "1 名主领队 + 2 名随队，全程带队控速、前后照应", "fs": 12.5, "color": "#4A6655", "align": 0 },
+        { "type": "rect", "box": [60, 188, 430, 86], "fill": "#FFFFFF", "line": "#D8EBDD" },
+        { "type": "rect", "box": [74, 204, 6, 34], "fill": "#348E6E" },
+        { "type": "txt", "box": [92, 198, 200, 26], "text": "急救保障", "fs": 15, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [92, 226, 380, 40], "text": "随队急救包 4 套，应急药品、创伤处理用品齐全", "fs": 12.5, "color": "#4A6655", "align": 0 },
+        { "type": "rect", "box": [60, 284, 430, 86], "fill": "#FFFFFF", "line": "#D8EBDD" },
+        { "type": "rect", "box": [74, 300, 6, 34], "fill": "#348E6E" },
+        { "type": "txt", "box": [92, 294, 200, 26], "text": "保险保障", "fs": 15, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [92, 322, 380, 40], "text": "全员户外意外险，出发前统一完成投保与名单核对", "fs": 12.5, "color": "#4A6655", "align": 0 },
+        { "type": "rect", "box": [60, 380, 430, 86], "fill": "#FFFFFF", "line": "#D8EBDD" },
+        { "type": "rect", "box": [74, 396, 6, 34], "fill": "#348E6E" },
+        { "type": "txt", "box": [92, 390, 200, 26], "text": "通讯保障", "fs": 15, "color": "#1F5E44", "bold": true, "align": 0 },
+        { "type": "txt", "box": [92, 418, 380, 40], "text": "对讲机 8 台，紧急联络卡人手一份，每 30 分钟清点", "fs": 12.5, "color": "#4A6655", "align": 0 },
+        { "type": "table", "box": [520, 100, 380], "cols": [250, 130], "header_row": ["物资", "数量"], "hdr_h": 34, "row_h": 52, "cell_fs": 12.5, "rows": [
+          ["矿泉水", "60 瓶"],
+          ["急救包", "4 套"],
+          ["对讲机", "8 台"],
+          ["路餐包", "40 份"],
+          ["应急药品", "2 套"],
+          ["遮阳帽", "40 顶"]
+        ] }
+      ]
+    },
+    {
+      "header": { "sec": "04 · 费用预算", "title": "公开透明，花在刀刃上", "logo": "Lantern" },
+      "items": [
+        { "type": "table", "box": [60, 100, 840], "cols": [300, 150, 150, 240], "header_row": ["项目", "单价（元）", "数量", "小计（元）"], "hdr_h": 36, "row_h": 44, "cell_fs": 13, "rows": [
+          ["大巴包车（往返）", "900", "2 辆", "1,800"],
+          ["户外意外保险", "20", "40 人", "800"],
+          ["山顶路餐", "25", "40 份", "1,000"],
+          ["急救物资与药品", "300", "1 批", "300"],
+          ["横幅与活动道具", "200", "1 批", "200"],
+          ["机动备用金", "200", "1 笔", "200"]
+        ] },
+        { "type": "redbar", "box": [60, 424, 840, 52], "text": "预算合计：4,300 元 · 人均约 108 元（按 40 人计）", "fs": 17 }
+      ]
+    },
+    {
+      "header": { "sec": "05 · 组织与总结", "title": "分工明确，各司其职", "logo": "Lantern" },
+      "items": [
+        { "type": "rect", "box": [60, 95, 250, 180], "fill": "#FFFFFF", "line": "#D8EBDD" },
+        { "type": "rect", "box": [60, 95, 250, 8], "fill": "#348E6E" },
+        { "type": "txt", "box": [60, 120, 250, 30], "text": "领队组", "fs": 17, "color": "#1F5E44", "bold": true, "align": 1 },
+        { "type": "txt", "box": [75, 158, 220, 90], "text": "路线提前探勘，确认补给点与撤退路线；徒步中带队控速、前后照应，处理突发状况。", "fs": 12.5, "color": "#4A6655", "align": 0 },
+        { "type": "rect", "box": [355, 95, 250, 180], "fill": "#FFFFFF", "line": "#D8EBDD" },
+        { "type": "rect", "box": [355, 95, 250, 8], "fill": "#348E6E" },
+        { "type": "txt", "box": [355, 120, 250, 30], "text": "后勤组", "fs": 17, "color": "#1F5E44", "bold": true, "align": 1 },
+        { "type": "txt", "box": [370, 158, 220, 90], "text": "物资采买与分发、补给点搭建、车辆调度；负责路餐、饮用水与应急物资的到点保障。", "fs": 12.5, "color": "#4A6655", "align": 0 },
+        { "type": "rect", "box": [650, 95, 250, 180], "fill": "#FFFFFF", "line": "#D8EBDD" },
+        { "type": "rect", "box": [650, 95, 250, 8], "fill": "#348E6E" },
+        { "type": "txt", "box": [650, 120, 250, 30], "text": "宣传组", "fs": 17, "color": "#1F5E44", "bold": true, "align": 1 },
+        { "type": "txt", "box": [665, 158, 220, 90], "text": "全程摄影记录、横幅与物料准备；活动后整理影像与图文回顾，沉淀团队记忆。", "fs": 12.5, "color": "#4A6655", "align": 0 },
+        { "type": "grad_bar", "img": "bar_green.png", "box": [60, 320, 840, 58], "text": "一次徒步，一次凝聚 —— 让团队在春天里走得更有力", "fs": 16.5, "color": "#FFFFFF" },
+        { "type": "txt", "box": [60, 410, 840, 30], "text": "本方案由 Lantern 全自动生成：内容以 JSON 描述，随时可调整时间、人数、预算后一键再生成。", "fs": 13, "color": "#7A9486", "align": 1 }
+      ]
+    }
+  ]
+}

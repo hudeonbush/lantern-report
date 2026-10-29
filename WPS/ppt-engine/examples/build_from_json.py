@@ -98,6 +98,12 @@ def _rect(s, it):
             line=hex2rgb(it.get("line"), None) if it.get("line") else None)
 
 
+@route("hline")
+def _hline(s, it):
+    el.hline(s, it.get("x", 0), it.get("y", 0), it.get("w", 100),
+             hex2rgb(it.get("color"), el.INK), it.get("wt", 1.0))
+
+
 @route("num_circle")
 def _num(s, it):
     el.num_circle(s, *it["box"], it.get("text", "1"),

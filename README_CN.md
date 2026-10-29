@@ -58,6 +58,35 @@ python build_from_json.py --json lantern/hiking_plan.json --out lantern/out
 
 页眉、表格、红条全部由 JSON 声明并自动排版；改动任意预算/日程数字重新运行，三页同步更新，成品 PPTX 与 PDF 同时产出。
 
+### 示范案例：6 页徒步团建策划案（全自动化渐进式 PPT）
+
+以 **`hiking_showcase.json`** 为例，一份 JSON 一次生成完整 6 页演示：封面、活动概览、行程时间轴、安全保障、费用预算、组织与总结。逐页翻动即完成叙事节奏，全部页面零手工排版（WPS 演示逐页截图）：
+
+| 页面 | 内容 | 截图 |
+| --- | --- | --- |
+| 第 1 页 | 封面：标题 + 四项关键信息 | ![P1](WPS/ppt-engine/examples/lantern/showcase_shots/hiking_page_1.png) |
+| 第 2 页 | 活动概览：四组信息卡 + 成品示例 | ![P2](WPS/ppt-engine/examples/lantern/showcase_shots/hiking_page_2.png) |
+| 第 3 页 | 行程时间轴：五个节点 + 分割线 | ![P3](WPS/ppt-engine/examples/lantern/showcase_shots/hiking_page_3.png) |
+| 第 4 页 | 安全保障：四类保障 + 物资表 | ![P4](WPS/ppt-engine/examples/lantern/showcase_shots/hiking_page_4.png) |
+| 第 5 页 | 费用预算：明细表 + 合计红色强调条 | ![P5](WPS/ppt-engine/examples/lantern/showcase_shots/hiking_page_5.png) |
+| 第 6 页 | 组织与总结：三组分工 + 横幅 | ![P6](WPS/ppt-engine/examples/lantern/showcase_shots/hiking_page_6.png) |
+
+修改方案只需调整 JSON 中的时间、人数、预算字段，一条命令即可再生整套成品。
+
+### 示范案例：石油炼制 3D 全流程网页（富媒体扩展）
+
+针对技术演示场景，Lantern 配套构建了单文件 3D 交互网页：以 three.js 呈现原油到汽油、柴油分馏裂化的完整流程，支持章节滚动叙事、相机联动与粒子动画；网页截图可直接进入 Lantern 演示，实现「演示与交付同源」。
+
+![3D 炼厂全流程](WPS/ppt-engine/examples/lantern/showcase_shots/refinery_3d_desktop.jpg)
+
+### 参赛文档
+
+| 文档 | 说明 |
+| --- | --- |
+| [参赛背景书](docs/Lantern参赛背景书.docx) | 行业痛点、产品方案、技术创新、应用价值（符合参赛要求） |
+| [使用说明书](docs/Lantern使用说明书.docx) | 环境要求、快速上手、JSON 语法参考、出片与校验 |
+
+
 ## 平台能力
 
 | 模块 | 能力 |

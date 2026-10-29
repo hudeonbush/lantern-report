@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "width": 960,
+    "height": 540,
+    "bg": "bg_page.png"
+  },
+  "slides": [
+    {
+      "header": { "sec": "LANTERN · 全自动化", "title": "一行 JSON，一套成品演示", "logo": "Lantern" },
+      "items": [
+        { "type": "pic", "img": "refinery_hero.jpg", "box": [40, 110, 430, 270], "fit": true },
+        { "type": "grad_bar", "img": "bar_blue.png", "box": [505, 105, 415, 44], "text": "从 JSON 描述到 PPTX / PDF / 截图，全自动出片", "fs": 15 },
+        { "type": "txt", "box": [505, 165, 415, 110], "text": "Lantern 以 JSON 描述页面，驱动 WPS 引擎逐元素渲染：标题、正文、渐变横幅、图片、圆标、多列表格一网打尽。改内容只改 JSON，不改一行代码；出片即出 PDF，自动校验。", "fs": 14, "align": 0 },
+        { "type": "pill", "box": [505, 290, 128, 28], "text": "写 JSON 不改代码", "fs": 12.5, "fill": "#3A5CA6" },
+        { "type": "pill", "box": [643, 290, 128, 28], "text": "多列表格原生支持", "fs": 12.5, "fill": "#3A5CA6" },
+        { "type": "pill", "box": [505, 325, 128, 28], "text": "出片自动校验", "fs": 12.5, "fill": "#3A5CA6" },
+        { "type": "num_circle", "box": [85, 420, 34], "text": "1", "fill": "#245CAA", "fs": 13 },
+        { "type": "txt", "box": [85, 462, 150, 30], "text": "JSON 描述页面", "fs": 13, "align": 1 },
+        { "type": "num_circle", "box": [255, 420, 34], "text": "2", "fill": "#245CAA", "fs": 13 },
+        { "type": "txt", "box": [255, 462, 150, 30], "text": "引擎逐元素解析", "fs": 13, "align": 1 },
+        { "type": "num_circle", "box": [425, 420, 34], "text": "3", "fill": "#245CAA", "fs": 13 },
+        { "type": "txt", "box": [425, 462, 150, 30], "text": "WPS 自动渲染", "fs": 13, "align": 1 },
+        { "type": "num_circle", "box": [595, 420, 34], "text": "4", "fill": "#245CAA", "fs": 13 },
+        { "type": "txt", "box": [595, 462, 150, 30], "text": "PPTX + PDF + 截图", "fs": 13, "align": 1 },
+        { "type": "num_circle", "box": [765, 420, 34], "text": "5", "fill": "#C01818", "fs": 13 },
+        { "type": "txt", "box": [765, 462, 150, 30], "text": "一处交付，评审即用", "fs": 13, "align": 1 }
+      ]
+    },
+    {
+      "header": { "sec": "案例一 · 办公文件", "title": "宁波金发新材料 · 徒步团建策划案", "logo": "Lantern" },
+      "items": [
+        { "type": "pic", "img": "hike_p1.png", "box": [40, 110, 430, 265], "fit": true },
+        { "type": "grad_bar", "img": "bar_teal.png", "box": [505, 105, 415, 40], "text": "3 页 JSON 驱动 · 行程 / 保障 / 预算一站成稿", "fs": 14 },
+        { "type": "txt", "box": [505, 160, 415, 100], "text": "面向办公室场景，把一份完整的团建策划案写成 JSON：封面主题、行程安排、安全与物资保障、费用预算全部结构化；引擎一次渲染出 PPTX 与 PDF，可直接投屏、打印、评审。", "fs": 13.5, "align": 0 },
+        { "type": "table", "box": [505, 280, 415], "cols": [90, 130, 195], "header_row": ["时间", "安排", "说明"], "hdr_h": 30, "row_h": 40, "cell_fs": 11.5, "rows": [
+          ["07:30", "公司集合出发", "大巴 2 辆 · 领队跟车"],
+          ["09:30", "徒步登山", "双线路可选 · 补给点"],
+          ["12:00", "山顶路餐", "餐包 + 能量补给"],
+          ["14:30", "返程", "清点人数 · 安全归队"]
+        ] }
+      ]
+    },
+    {
+      "header": { "sec": "案例二 · 3D 交互", "title": "石油炼制 3D 全流程 · 单文件网页", "logo": "Lantern" },
+      "items": [
+        { "type": "pic", "img": "refinery_fcc.jpg", "box": [40, 110, 430, 265], "fit": true },
+        { "type": "grad_bar", "img": "bar_red.png", "box": [505, 105, 415, 40], "text": "three.js 单文件 · 6 章节滚动叙事 · 相机随章节联动", "fs": 14 },
+        { "type": "txt", "box": [505, 160, 415, 120], "text": "从原油到成品油：常压蒸馏、减压蒸馏、催化裂化、加氢提质、产品调和，一套可拖拽旋转的 3D 炼厂逐章展开。温度滑块联动塔芯、催化剂粒子循环演示——工艺数据均为典型工业范围。", "fs": 13.5, "align": 0 },
+        { "type": "pill", "box": [505, 300, 128, 28], "text": "真实工艺数据", "fs": 12.5, "fill": "#C01818" },
+        { "type": "pill", "box": [643, 300, 128, 28], "text": "交互可探索", "fs": 12.5, "fill": "#C01818" },
+        { "type": "grad_bar", "img": "bar_dark.png", "box": [505, 350, 415, 40], "text": "网页截图 → Lantern 一键进 PPT，演示与交付同源", "fs": 13.5 }
+      ]
+    },
+    {
+      "header": { "sec": "全自动化", "title": "一条命令完成：需求 → 成品", "logo": "Lantern" },
+      "items": [
+        { "type": "table", "box": [60, 120, 840], "cols": [130, 260, 250, 200], "header_row": ["环节", "输入", "输出", "自动化程度"], "hdr_h": 34, "row_h": 52, "cell_fs": 12, "rows": [
+          ["需求理解", "自然语言 / JSON", "页面结构清单", "自动解析"],
+          ["版面生成", "JSON 元素", "文字 / 形状 / 图片 / 表格", "自动排版"],
+          ["数据表格", "行数据", "多列表格（可调列宽）", "自动绘制"],
+          ["出片交付", "页面定义", "PPTX + PDF + 截图", "一键完成"]
+        ] },
+        { "type": "txt", "box": [60, 380, 840, 40], "text": "同一个 JSON，既描述内容，又描述版面；内容更新不改引擎，版面调整不动数据。", "fs": 14, "align": 1 },
+        { "type": "redbar", "box": [60, 440, 840, 48], "text": "Lantern：演示文稿生产，从此是一条流水线", "fs": 17 }
+      ]
+    }
+  ]
+}
