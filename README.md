@@ -49,6 +49,18 @@ Output (≈10–20 s, with automatic page-count and overflow verification):
 Demo: **Ningbo Kingfa New Material Co., Ltd. hiking team-building plan** (3 slides: cover / schedule / budget & support).
 Change a budget or schedule number in the JSON and re-run — the new deck is generated automatically, fully reproducible.
 
+### Demo output (one command, fully automated, zero manual layout)
+
+The 3 finished slides below are produced by a single `hiking_plan.json` command (screenshots from WPS Presentation):
+
+![Slide 1 · Activity cover](WPS/ppt-engine/examples/lantern/screenshots/ppt_p1.png)
+
+![Slide 2 · Schedule](WPS/ppt-engine/examples/lantern/screenshots/ppt_p2.png)
+
+![Slide 3 · Budget & support](WPS/ppt-engine/examples/lantern/screenshots/ppt_p3.png)
+
+Headers, tables and banner strips are all declared in JSON and auto-laid-out; change any budget/schedule number and re-run to regenerate all three slides, with PPTX and PDF exported together.
+
 ## Platform capabilities
 
 | Module | Capability |

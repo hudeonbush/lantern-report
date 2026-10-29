@@ -46,6 +46,18 @@ python build_from_json.py --json lantern/hiking_plan.json --out lantern/out
 演示案例：**宁波金发新材料有限公司徒步团建活动策划案**（3 页：封面 / 行程安排 / 预算与保障）。
 改动预算、日程只需修改 JSON 数字，重新运行即得新版 —— **全自动、可复现**。
 
+### 演示效果（一条命令全自动出片，零手工排版）
+
+以下 3 页成品由 `hiking_plan.json` 一条命令生成（WPS 演示逐页截图）：
+
+![第1页 · 活动封面](WPS/ppt-engine/examples/lantern/screenshots/ppt_p1.png)
+
+![第2页 · 活动方案与行程安排](WPS/ppt-engine/examples/lantern/screenshots/ppt_p2.png)
+
+![第3页 · 预算与保障](WPS/ppt-engine/examples/lantern/screenshots/ppt_p3.png)
+
+页眉、表格、红条全部由 JSON 声明并自动排版；改动任意预算/日程数字重新运行，三页同步更新，成品 PPTX 与 PDF 同时产出。
+
 ## 平台能力
 
 | 模块 | 能力 |
