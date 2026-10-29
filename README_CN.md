@@ -35,7 +35,7 @@ WPS 在 Windows 上暴露了完整的 COM 自动化接口（与 Microsoft Office
 ```bash
 cd WPS/ppt-engine/examples
 pip install pywin32 Pillow pymupdf
-python build_from_json.py --json lantern/示例1_徒步策划案_数据源.json --out lantern/out --name 示例1_徒步策划案_精简
+python build_from_json.py --json lantern/example1_hiking_plan_lite.json --out lantern/out --name example1_hiking_plan_lite
 ```
 
 输出（约 10–20 秒，自动校验页数与内容溢出）：
@@ -48,7 +48,7 @@ python build_from_json.py --json lantern/示例1_徒步策划案_数据源.json 
 
 ### 演示效果（一条命令全自动出片，零手工排版）
 
-以下 3 页成品由 `示例1_徒步策划案_数据源.json` 一条命令生成（WPS 演示逐页截图）：
+以下 3 页成品由 `example1_hiking_plan_lite.json` 一条命令生成（WPS 演示逐页截图）：
 
 ![第1页 · 活动封面](WPS/ppt-engine/examples/lantern/screenshots/ppt_p1.png)
 
@@ -60,16 +60,16 @@ python build_from_json.py --json lantern/示例1_徒步策划案_数据源.json 
 
 ### 示范案例：6 页徒步团建策划案（全自动化渐进式 PPT）
 
-以 **`示例1_徒步策划案.json`** 为例，一份 JSON 一次生成完整 6 页演示：封面、活动概览、行程时间轴、安全保障、费用预算、组织与总结。逐页翻动即完成叙事节奏，全部页面零手工排版（WPS 演示逐页截图）：
+以 **`example1_hiking_plan.json`** 为例，一份 JSON 一次生成完整 6 页演示：封面、活动概览、行程时间轴、安全保障、费用预算、组织与总结。逐页翻动即完成叙事节奏，全部页面零手工排版（WPS 演示逐页截图）：
 
 | 页面 | 内容 | 截图 |
 | --- | --- | --- |
-| 第 1 页 | 封面：标题 + 四项关键信息 | ![P1](WPS/ppt-engine/examples/lantern/showcase_shots/示例1_徒步策划案_第1.png) |
-| 第 2 页 | 活动概览：四组信息卡 + 成品示例 | ![P2](WPS/ppt-engine/examples/lantern/showcase_shots/示例1_徒步策划案_第2.png) |
-| 第 3 页 | 行程时间轴：五个节点 + 分割线 | ![P3](WPS/ppt-engine/examples/lantern/showcase_shots/示例1_徒步策划案_第3.png) |
-| 第 4 页 | 安全保障：四类保障 + 物资表 | ![P4](WPS/ppt-engine/examples/lantern/showcase_shots/示例1_徒步策划案_第4.png) |
-| 第 5 页 | 费用预算：明细表 + 合计红色强调条 | ![P5](WPS/ppt-engine/examples/lantern/showcase_shots/示例1_徒步策划案_第5.png) |
-| 第 6 页 | 组织与总结：三组分工 + 横幅 | ![P6](WPS/ppt-engine/examples/lantern/showcase_shots/示例1_徒步策划案_第6.png) |
+| 第 1 页 | 封面：标题 + 四项关键信息 | ![P1](WPS/ppt-engine/examples/lantern/showcase_shots/example1_hiking_plan_page1.png) |
+| 第 2 页 | 活动概览：四组信息卡 + 成品示例 | ![P2](WPS/ppt-engine/examples/lantern/showcase_shots/example1_hiking_plan_page2.png) |
+| 第 3 页 | 行程时间轴：五个节点 + 分割线 | ![P3](WPS/ppt-engine/examples/lantern/showcase_shots/example1_hiking_plan_page3.png) |
+| 第 4 页 | 安全保障：四类保障 + 物资表 | ![P4](WPS/ppt-engine/examples/lantern/showcase_shots/example1_hiking_plan_page4.png) |
+| 第 5 页 | 费用预算：明细表 + 合计红色强调条 | ![P5](WPS/ppt-engine/examples/lantern/showcase_shots/example1_hiking_plan_page5.png) |
+| 第 6 页 | 组织与总结：三组分工 + 横幅 | ![P6](WPS/ppt-engine/examples/lantern/showcase_shots/example1_hiking_plan_page6.png) |
 
 修改方案只需调整 JSON 中的时间、人数、预算字段，一条命令即可再生整套成品。
 
@@ -77,7 +77,7 @@ python build_from_json.py --json lantern/示例1_徒步策划案_数据源.json 
 
 针对技术演示场景，Lantern 配套构建了单文件 3D 交互网页：以 three.js 呈现原油到汽油、柴油分馏裂化的完整流程，支持章节滚动叙事、相机联动与粒子动画；网页截图可直接进入 Lantern 演示，实现「演示与交付同源」。
 
-![3D 炼厂全流程](WPS/ppt-engine/examples/lantern/showcase_shots/示例2_化工演示_3D截图.jpg)
+![3D 炼厂全流程](WPS/ppt-engine/examples/lantern/showcase_shots/example2_refinery_3d.jpg)
 
 ### 参赛文档
 
@@ -109,7 +109,7 @@ python build_from_json.py --json lantern/示例1_徒步策划案_数据源.json 
 
 ```bash
 # 自动设计 PPT（核心场景）
-cd WPS/ppt-engine/examples && python build_from_json.py --json lantern/示例1_徒步策划案_数据源.json --out lantern/out --name 示例1_徒步策划案_精简
+cd WPS/ppt-engine/examples && python build_from_json.py --json lantern/example1_hiking_plan_lite.json --out lantern/out --name example1_hiking_plan_lite
 
 # 数据报表（附带能力）
 cd report_demo && python build_report.py

@@ -38,7 +38,7 @@ declared in data, auto-laid-out, auto-rendered, and auto-verified.
 ```bash
 cd WPS/ppt-engine/examples
 pip install pywin32 Pillow pymupdf
-python build_from_json.py --json lantern/示例1_徒步策划案_数据源.json --out lantern/out --name 示例1_徒步策划案_精简
+python build_from_json.py --json lantern/example1_hiking_plan_lite.json --out lantern/out --name example1_hiking_plan_lite
 ```
 
 Output (≈10–20 s, with automatic page-count and overflow verification):
@@ -51,7 +51,7 @@ Change a budget or schedule number in the JSON and re-run — the new deck is ge
 
 ### Demo output (one command, fully automated, zero manual layout)
 
-The 3 finished slides below are produced by a single `示例1_徒步策划案_数据源.json` command (screenshots from WPS Presentation):
+The 3 finished slides below are produced by a single `example1_hiking_plan_lite.json` command (screenshots from WPS Presentation):
 
 ![Slide 1 · Activity cover](WPS/ppt-engine/examples/lantern/screenshots/ppt_p1.png)
 
@@ -83,7 +83,7 @@ Headers, tables and banner strips are all declared in JSON and auto-laid-out; ch
 
 ```bash
 # Auto-design PPT (core)
-cd WPS/ppt-engine/examples && python build_from_json.py --json lantern/示例1_徒步策划案_数据源.json --out lantern/out --name 示例1_徒步策划案_精简
+cd WPS/ppt-engine/examples && python build_from_json.py --json lantern/example1_hiking_plan_lite.json --out lantern/out --name example1_hiking_plan_lite
 
 # Data reporting (bundled capability)
 cd report_demo && python build_report.py

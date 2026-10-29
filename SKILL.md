@@ -45,11 +45,11 @@ cli-anything-zotero --help  # Zotero
 
 ```bash
 cd WPS/ppt-engine/examples
-python build_from_json.py --json lantern/示例1_徒步策划案_数据源.json --out lantern/out --name 示例1_徒步策划案_精简
+python build_from_json.py --json lantern/example1_hiking_plan_lite.json --out lantern/out --name example1_hiking_plan_lite
 # JSON 数据 → 成品 PPTX + PDF（自动校验页数与溢出）
 ```
 
-- 数据源：`lantern/示例1_徒步策划案_数据源.json`（3 页徒步团建活动策划案，演示案例，参数可调整）
+- 数据源：`lantern/example1_hiking_plan_lite.json`（3 页徒步团建活动策划案，演示案例，参数可调整）
 - 生成器：`WPS/ppt-engine/examples/build_from_json.py`（支持封面/图文/表格/红条等元素，多列表格自动渲染）
 - 详细用法见 `cli_anything/wps/skills/SKILL.md` 的「自动设计 PPT」章节。
 
