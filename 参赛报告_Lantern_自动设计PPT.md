@@ -35,7 +35,7 @@ Lantern 基于 WPS 演示的 COM 自动化接口构建。原平台 cli-anything-
 |------|------|--------------|
 | `ppt-engine/examples/build_from_json.py` | 新增/改造 | JSON 声明式出片入口：header/rich/gray_box/table/redbar 五种元素；**多列表格自动渲染**（原版仅支持两列，现支持任意列数，兼容旧两列语义）；`cell_parts` 统一解析字符串/字典/列表单元格；出片时逐页校验页数与内容溢出 |
 | `ppt-engine/pptengine/elements.py` | 改造 | 矩形拼格表格渲染（规避 WPS AddTable 边框 API 不稳定）；表头蓝底白字、隔行底色、首列强调 |
-| `examples/lantern/hiking_plan.json` | 新增 | 演示案例数据源：宁波金发新材料有限公司徒步团建活动策划案（3 页：封面、活动方案与行程安排、预算与保障），全部内容由 JSON 声明 |
+| `examples/lantern/示例1_徒步策划案_数据源.json` | 新增 | 演示案例数据源：宁波金发新材料有限公司徒步团建活动策划案（3 页：封面、活动方案与行程安排、预算与保障），全部内容由 JSON 声明 |
 | `cli_anything/wps` | 保留强化 | WPS 演示 COM 操控与数据报表能力（汇总公式、区域格式、图表插图、XLSX/PDF 导出）作为平台附带能力 |
 | `SKILL.md / README / registry` | 改造 | 统一品牌为 Lantern（灯台），主线改为自动设计 PPT，仓库地址同步更新 |
 
@@ -64,7 +64,7 @@ pip install pywin32 Pillow pymupdf
 
 ```powershell
 cd WPS/ppt-engine/examples
-python build_from_json.py --json lantern/hiking_plan.json --out lantern/out
+python build_from_json.py --json lantern/示例1_徒步策划案_数据源.json --out lantern/out --name 示例1_徒步策划案_精简
 ```
 
 脚本自动完成：读取 JSON 策划数据 → 逐页排版（封面、行程表格、预算表格、红条结语）→ 自动校验页数与溢出 → 导出成品 PPTX 与 PDF。实测一次运行约 **10–20 秒**，输出徒步团建策划案的 PPTX 与 PDF（各 3 页）。
@@ -73,10 +73,10 @@ python build_from_json.py --json lantern/hiking_plan.json --out lantern/out
 
 ```powershell
 # ① 运行一键工作流
-python build_from_json.py --json lantern/hiking_plan.json --out lantern/out
+python build_from_json.py --json lantern/示例1_徒步策划案_数据源.json --out lantern/out --name 示例1_徒步策划案_精简
 
 # ② 修改内容（改 JSON 数字即改稿，例如预算合计 9400 → 12000）
-#    编辑 lantern/hiking_plan.json 中表格 rows 的金额列数字后重新运行
+#    编辑 lantern/示例1_徒步策划案_数据源.json 中表格 rows 的金额列数字后重新运行
 
 # ③ WPS 演示 COM 操控（等价基础命令，供手工核对/放映）
 cli-anything-wps document new --type impress --name 徒步团建策划案
@@ -85,7 +85,7 @@ cli-anything-wps export render lantern/out/徒步团建策划案.pptx -p pptx
 
 ### 4.4 数据替换（正式使用）
 
-将 `lantern/hiking_plan.json` 中的活动时间、参与人员、行程、预算金额等替换为真实策划数据后重新运行即可。当前 JSON 为演示数据（预算合计 9400 元，按 40 人计），仅用于完整展示可复现链路。
+将 `lantern/示例1_徒步策划案_数据源.json` 中的活动时间、参与人员、行程、预算金额等替换为真实策划数据后重新运行即可。当前 JSON 为演示数据（预算合计 9400 元，按 40 人计），仅用于完整展示可复现链路。
 
 ## 五、成效
 

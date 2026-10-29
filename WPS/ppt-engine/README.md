@@ -26,7 +26,7 @@ pip install -r requirements.txt
 ```bash
 cd examples
 python build_demo.py              # 输出 ./out/demo.pptx（含 PDF）
-python build_from_json.py         # 用 slides.json 驱动，输出 ./out/from_json.pptx
+python build_from_json.py --name my_deck   # 用 slides.json 驱动，输出 ./out/<名称>.pptx（--name 指定，默认 from_json）
 
 python build_demo.py --out D:/tmp/myppt      # 指定输出目录
 python build_demo.py --no-visible            # 后台生成，不弹 WPS 窗口

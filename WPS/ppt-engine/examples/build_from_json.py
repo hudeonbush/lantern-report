@@ -175,6 +175,7 @@ def main():
     ap.add_argument("--json", default=str(Path(__file__).parent / "slides.json"))
     ap.add_argument("--out", default=None)
     ap.add_argument("--assets", default=None)
+    ap.add_argument("--name", default="from_json")
     args = ap.parse_args()
 
     cfg = json.loads(Path(args.json).read_text(encoding="utf-8"))
@@ -190,7 +191,7 @@ def main():
 
     out_dir = Path(args.out).expanduser().resolve() if args.out else (Path.cwd() / "out")
     out_dir.mkdir(parents=True, exist_ok=True)
-    pptx, pdf = deck.save(out_dir / "from_json.pptx")
+    pptx, pdf = deck.save(out_dir / f"{args.name}.pptx")
     if pdf:
         verify.verify_pdf(pdf)
     print("[done] 输出:", pptx)
