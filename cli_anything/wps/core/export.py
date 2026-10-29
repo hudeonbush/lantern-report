@@ -4,7 +4,9 @@
 """
 
 import os
+import sys
 import tempfile
+import time
 from typing import Dict, Any, Optional
 
 try:
@@ -492,20 +494,31 @@ def _fill_calc(doc, project: Dict[str, Any]) -> None:
 
 
 def _add_calc_image(ws, img: Dict[str, Any]) -> None:
-    """在 WPS Calc 工作表中插入图片（Shapes.AddPicture）。"""
-    try:
-        path = img.get("path", "")
-        if not path or not os.path.exists(path):
+    """在 WPS Calc 工作表中插入图片（Shapes.AddPicture）。
+
+    WPS COM 偶发 RPC 拒绝会导致插入失败，这里做最多 3 次重试；
+    失败不再静默吞掉，而是打印可见告警（便于诊断报表缺图问题）。
+    """
+    path = img.get("path", "")
+    if not path or not os.path.exists(path):
+        print(f"[WARN] 图片文件不存在，跳过: {path}", file=sys.stderr)
+        return
+    left = float(img.get("left", 10))
+    top = float(img.get("top", 10))
+    width = float(img.get("width", 480))
+    height = float(img.get("height", 270))
+    last_error: Optional[Exception] = None
+    for attempt in range(1, 4):
+        try:
+            # AddPicture(Filename, LinkToFile=False, SaveWithDocument=True,
+            #            Left, Top, Width, Height)
+            ws.Shapes.AddPicture(path, False, True, left, top, width, height)
             return
-        # AddPicture(Filename, LinkToFile=False, SaveWithDocument=True,
-        #            Left, Top, Width, Height)
-        ws.Shapes.AddPicture(
-            path, False, True,
-            float(img.get("left", 10)), float(img.get("top", 10)),
-            float(img.get("width", 480)), float(img.get("height", 270)),
-        )
-    except Exception:
-        pass  # 图片插入失败不中断导出
+        except Exception as e:  # noqa: BLE001 - COM 异常类型不定，统一捕获重试
+            last_error = e
+            time.sleep(0.8)
+    print(f"[WARN] 图片插入失败（已重试 3 次）: {path}\n"
+          f"      最后一次错误: {last_error!r}", file=sys.stderr)
 
 
 # ── Calc 格式与图表渲染 ─────────────────────────────────────────
