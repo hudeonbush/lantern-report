@@ -1,0 +1,718 @@
+================================================================================
+思政说课 PPT（红金党建风 · 1:1 复刻）完整制作经验 —— 跨电脑通用纯文本版
+================================================================================
+受众：任何人在任何电脑上，照抄本文的脚手架与参数即可在 WPS 中复刻/改版同类
+      红金党建风说课 PPT，无需任何绝对路径、无需改代码路径。
+成品：思政说课_1比1复刻.pptx 与 .pdf（8 页，WPS 窗口保留可编辑）。
+配套：同目录 WPS_COM_PPT制作完整指南.md（文本框居中铁律、fitz 校验、版式库等）。
+本文件零绝对路径：所有路径在脚本里用 os.path 自动从脚本自身位置推导，
+拷到任意电脑都能跑。
+
+================================================================================
+0. 跨电脑使用三步（必读）
+================================================================================
+1) 复制文件夹：把整个 思政说课_复刻/ 文件夹拷到你的电脑任意位置，保持内部
+   子目录结构不变。
+2) 准备素材：work/figs/ 里需要 33 张图片（见第 8 节）。用你自己的
+   ImageGen / AI 绘图工具按提示词生成，按文件名存入即可。换背景时用你自己的
+   新图（见第 7.2 节）。
+3) 装依赖 + 运行：用任意装了 pywin32 / Pillow / PyMuPDF 的 Python（Windows +
+   WPS 必选；推荐 WorkBuddy 托管 venv）执行：
+       cd 思政说课_复刻/work
+       python build_sz.py
+   脚本自动定位项目根目录，不会因电脑不同而出错。
+
+依赖仅 Windows + 本机 WPS 下有效（WPS COM 只支持 Windows）。其他系统请改回
+python-pptx 纯代码生成（思路见通用指南）。
+
+================================================================================
+1. 目录结构（相对路径，跨电脑不变）
+================================================================================
+思政说课_复刻/
+├── 思政说课_1比1复刻.pptx         ← 成品（WPS 可编辑）
+├── 思政说课_1比1复刻.pdf          ← 成品（分发用）
+└── work/
+    ├── build_sz.py                ← 核心构建脚本（自动定位根目录）
+    ├── make_new_bg.py             ← 背景处理：去水印+裁16:9+柔白蒙版
+    ├── check.py                   ← fitz 校验脚本（见第 9 节）
+    ├── figs/                      ← 33+ 张素材（见第 8 节）
+    ├── bgs/
+    │   ├── bg_cover.png           ← 封面背景（去水印+裁切版）
+    │   ├── bg_content.png         ← 内容页背景（封面底+柔白蒙版）
+    │   ├── bg_cover_old.png       ← 旧背景备份
+    │   └── bg_content_old.png     ← 旧背景备份
+    └── new_bg.jpg                 ← （可选）用户给的新背景原图，用于重做背景
+
+路径自动定位写法（所有脚本通用）：
+    import os
+    HERE = os.path.dirname(os.path.abspath(__file__))   # .../work
+    BASE = os.path.dirname(HERE)                         # 项目根：思政说课_复刻/
+    FIG  = os.path.join(BASE, "work", "figs")
+    BGS  = os.path.join(BASE, "work", "bgs")
+同理 make_new_bg.py 用 HERE 找 bgs/ 和 new_bg.jpg；check.py 用 BASE 找 pdf。
+
+================================================================================
+2. 设计系统（红金党建风）
+================================================================================
+2.1 配色表（RGB，写进 h2b() 转 BGR）
+    RED   = (176, 31, 36)    # 主红  B01F24 —— 胶囊、标签、圆形照片描边
+    REDD  = (142, 20, 20)    # 深红  8E1414 —— 页标题胶囊底
+    REDT  = (166, 27, 27)    # 标题深红 A61B1B —— 所有小标题文字
+    GOLD  = (232, 184, 75)   # 金  E8B84B —— 五角星、分隔线
+    GOLDD = (216, 164, 65)   # 深金 —— 序号、装饰
+    ORG   = (232, 131, 58)   # 橙 —— 箭头形状
+    INK   = (51, 51, 51)     # 正文黑
+    G     = (120, 120, 120)  # 灰 —— 未激活导航文字
+    WHITE = (255, 255, 255)
+    PINKL = (240, 201, 196)  # 浅红边框 —— 卡片描边
+    CREAM = (253, 243, 240)  # 浅底 —— 问题卡填充
+
+2.2 字体
+    FT = 'Microsoft YaHei'    # 正文
+    FX = '华文行楷'            # 封面书法主标题「思政说课」
+    FK = 'Microsoft YaHei'    # 导航
+    用微软雅黑防中文方块；封面书法用「华文行楷」更贴党建风。若目标机无华文行楷，
+    换 FT/FX 为已安装字体即可。
+
+2.3 画布
+    SlideWidth=960, SlideHeight=540（16:9）。所有坐标以此为画布。
+
+================================================================================
+3. 八页内容结构
+================================================================================
+页  章节       顶部激活标签       布局要点
+P1  封面       —                  书法主标题居中、金星+分隔、红色横幅、汇报人/时间胶囊
+P2  课程介绍   教学整体设计        左教材图 + 三卡（理论/问题/教学法）
+P3  学情分析   教学整体设计        左调研结论卡 + 右调研照 + 两张图表卡
+P4  课前准备   教学实施过程        三列卡片，每列顶部圆形照片 + 标题 + 要点 + 两小图
+P5  能力提升   学生学习效果        华表大图贴右 + 三行横向卡（图片+标题+要点）
+P6  价值认同   学生学习效果        顶部两行标语 + 左/中/右三卡（理论/创新网格/价值）
+P7  教学反思   反思改进措施        实践/学情两行 + 阶梯三卡（01/02/03，错落高度）+ 橙色箭头
+P8  创新方向   反思改进措施        顶部三问题卡 + 左模式创新卡 + 右课程思政融合卡（金色圆环+四角标签）
+
+顶部 4 标签集合：["教学整体设计","教学实施过程","学生学习效果","反思改进措施"]
+左侧 7 章节导航：["课程介绍","学情分析","课前准备","能力提升","价值认同","教学反思","创新方向"]
+
+================================================================================
+4. 核心架构范式
+================================================================================
+4.1 WPS COM 可见模式 + 数据驱动
+    - win32com.client.Dispatch('KWPP.Application') → app.Visible = True
+    - 生成前 taskkill /F /IM wps.exe /IM wpscenter.exe /IM wpp.exe /IM et.exe
+      /IM etx.exe 清残留防 RPC 断连；connect_wps() 封装 4 次重试
+    - 每页：s = pres.Slides.Add(idx, 12)（布局 12=空白）→
+      s.Background.Fill.UserPicture(bg) 铺母版图 → 画内容
+    - 每页后 app.ActiveWindow.View.GotoSlide(idx) + time.sleep(0.25)，让用户实时看到
+    - 跑完不 app.Quit()，保留窗口供编辑
+    - 导出：pres.SaveAs(pptx, 26) 与 pres.SaveAs(pdf, 32)；导出前先 os.remove 旧 PDF
+
+4.2 标准 txt()（居中铁律）
+    def txt(s, x, y, w, h, text, fs=13, color=INK, bold=False, align=1, font=FT, italic=False):
+        tb = s.Shapes.AddTextbox(1, x, y, w, h)
+        tf = tb.TextFrame
+        tf.WordWrap = True          # 致命：False+居中会让文字跑出文本框
+        try:
+            tf.MarginLeft=0; tf.MarginRight=0; tf.MarginTop=0; tf.MarginBottom=0
+            tf.AutoSize = 0
+            tf.VerticalAnchor = 3   # msoAnchorMiddle 垂直居中
+        except Exception: pass
+        tf.TextRange.Text = text
+        f = tf.TextRange.Font
+        f.Name = font; f.Size = fs; f.Color.RGB = h2b(color)
+        if bold: f.Bold = True
+        if italic: f.Italic = True
+        try: tf.TextRange.ParagraphFormat.Alignment = {1:1,2:2,3:3}[align]
+        except Exception: pass
+        return tb
+    align: 1=左 / 2=中 / 3=右。居中、右对齐必须 WordWrap=True，否则文字左移越界。
+    多行+垂直居中时 WPS 计算会上浮约 10pt：若标题顶端探出，改顶对齐或手工定 y。
+
+4.3 左侧竖导航栏避让（本项目头等坑）
+    原图左侧竖导航栏占 x[8,108] y[190,406]，列 7 个章节名。内容卡左缘若 <108
+    会压住导航文字（用户原话「你的内容把侧边导航栏盖住了」）。
+    修复：所有内容左缘统一 ≥118（导航右缘 108 + 10pt 安全距）。
+    例：P2 教材图 x=118、卡片 x=322；P3 卡 x=122；P4 三列 x=118/398/678；
+        P5 卡 x=122；P6 卡 x=122/398/674；P7 阶梯 x=122/392/662；P8 卡 x=122/498。
+    内部元素随左缘同步右移、整体收窄，右缘 ≤940。导航用 pill(s,8,y,100,24,...)，
+    激活态红底白字、非激活态灰字白底浅描边。
+    校验：fitz 抽文字 bbox，若落在 x<108 & y[190,406] 且文本不在 7 章节名 → 侵入。
+
+4.4 公共部件 chrome()
+    每内容页开头 chrome(s, sec_name, active_tab)：
+      1) 左上金星：shape(s,26,9,46,42,GOLD,st=92)，失败回退「★」文字
+      2) 页标题深红胶囊：pill(s,84,10,196,40,sec_name,21,WHITE,REDD)
+      3) 顶部 4 标签：激活态红底红字描边，非激活态白底黑字
+      4) 左侧 7 章节竖导航（见 4.3）
+    pill() = 圆角矩形(st=5)+文字；shape() = AddShape(st,...)，st：5=圆角矩形、9=椭圆、
+    33=右箭头、92=五角星、18=圆环(donut)。
+
+================================================================================
+5. 关键形状与组件速查
+================================================================================
+圆角胶囊标签：shape(s,x,y,w,h,fill,st=5) + shape_text
+圆形照片：    s.Shapes.AddShape(9,x,y,w,h) + .Fill.UserPicture() + 白描边（Weight=2.5）
+金色圆环：    s.Shapes.AddShape(18,...) Fill.ForeColor，中心放「育人\n架构」
+橙色箭头：    shape(s,...,ORG,st=33) + .Rotation=-22（旋转加 try）
+卡片：        shape(s,x,y,w,h,WHITE,line=PINKL,lw=1.2,st=5)
+柱状/饼图：  放 figs/chart1.png 等
+形状映射坑：WPS AddShape 某些 st 编号与文档不符（如 51 变箭头而非六边形）。
+            复杂/规整形状优先用 PIL 画 PNG 再 AddPicture。
+
+================================================================================
+6. 完整 build_sz.py（跨电脑可直接抄运行）
+================================================================================
+# -*- coding: utf-8 -*-
+"""思政说课 PPT 1:1 复刻 — WPS COM 可见模式构建 8 页（跨电脑通用，路径自动定位）"""
+import os, time, math
+import win32com.client
+import pythoncom
+
+# ===== 自动定位项目根目录（不写任何绝对路径，拷到任意电脑都能跑）=====
+HERE = os.path.dirname(os.path.abspath(__file__))        # .../work
+BASE = os.path.dirname(HERE)                             # 项目根：思政说课_复刻/
+FIG  = os.path.join(BASE, "work", "figs")
+BGS  = os.path.join(BASE, "work", "bgs")
+OUT_PPTX = os.path.join(BASE, "思政说课_1比1复刻.pptx")
+OUT_PDF  = os.path.join(BASE, "思政说课_1比1复刻.pdf")
+
+FT = 'Microsoft YaHei'      # 正文
+FX = '华文行楷'              # 封面书法
+FK = 'Microsoft YaHei'      # 导航
+
+RED   = (176, 31, 36); REDD = (142, 20, 20); REDT = (166, 27, 27)
+GOLD  = (232, 184, 75); GOLDD = (216, 164, 65); ORG = (232, 131, 58)
+INK   = (51, 51, 51);  G = (120, 120, 120); WHITE = (255, 255, 255)
+PINKL = (240, 201, 196); CREAM = (253, 243, 240)
+
+def h2b(c):
+    return c[0] + c[1]*256 + c[2]*65536   # RGB -> BGR
+
+TASKKILL = 'taskkill /F /IM wps.exe /IM wpscenter.exe /IM wpp.exe /IM et.exe /IM etx.exe >NUL 2>&1'
+os.system(TASKKILL)
+time.sleep(2.5)
+
+def connect_wps(retries=4):
+    for i in range(retries):
+        try:
+            app = win32com.client.Dispatch('KWPP.Application')
+            app.Visible = True
+            _ = app.Presentations.Count
+            return app
+        except Exception:
+            pythoncom.CoUninitialize()
+            time.sleep(2.5)
+    raise RuntimeError("WPS COM 连接失败")
+
+app = connect_wps()
+pres = app.Presentations.Add()
+pres.PageSetup.SlideWidth = 960
+pres.PageSetup.SlideHeight = 540
+
+def new_slide(idx, bg):
+    s = pres.Slides.Add(idx, 12)
+    try:
+        s.Background.Fill.UserPicture(bg)
+    except Exception:
+        s.FollowMasterBackground = False
+        s.Background.Fill.UserPicture(bg)
+    try:
+        app.ActiveWindow.View.GotoSlide(idx)
+    except Exception:
+        pass
+    time.sleep(0.25)
+    return s
+
+def txt(s, x, y, w, h, text, fs=13, color=INK, bold=False, align=1, font=FT, italic=False):
+    tb = s.Shapes.AddTextbox(1, x, y, w, h)
+    tf = tb.TextFrame
+    tf.WordWrap = True
+    try:
+        tf.MarginLeft = 0; tf.MarginRight = 0; tf.MarginTop = 0; tf.MarginBottom = 0
+        tf.AutoSize = 0
+        tf.VerticalAnchor = 3
+    except Exception:
+        pass
+    tf.TextRange.Text = text
+    f = tf.TextRange.Font
+    f.Name = font; f.Size = fs
+    f.Color.RGB = h2b(color)
+    if bold: f.Bold = True
+    if italic: f.Italic = True
+    try:
+        tf.TextRange.ParagraphFormat.Alignment = {1: 1, 2: 2, 3: 3}[align]
+    except Exception:
+        pass
+    return tb
+
+def shape(s, x, y, w, h, fill, line=None, lw=1.0, st=1):
+    sp = s.Shapes.AddShape(st, x, y, w, h)
+    sp.Fill.Solid()
+    sp.Fill.ForeColor.RGB = h2b(fill)
+    if line is None:
+        sp.Line.Visible = False
+    else:
+        sp.Line.ForeColor.RGB = h2b(line)
+        sp.Line.Weight = lw
+    return sp
+
+def shape_text(sp, text, fs, color, bold=True, font=FT):
+    tf = sp.TextFrame
+    try:
+        tf.MarginLeft = 0; tf.MarginRight = 0; tf.MarginTop = 0; tf.MarginBottom = 0
+        tf.AutoSize = 0
+        tf.VerticalAnchor = 3
+    except Exception:
+        pass
+    tf.WordWrap = True
+    tf.TextRange.Text = text
+    f = tf.TextRange.Font
+    f.Name = font; f.Size = fs
+    f.Color.RGB = h2b(color)
+    if bold: f.Bold = True
+    try:
+        tf.TextRange.ParagraphFormat.Alignment = 2
+    except Exception:
+        pass
+
+def pill(s, x, y, w, h, text, fs, fg, bg, bold=True, line=None, lw=1.0, font=FT):
+    sp = shape(s, x, y, w, h, bg, line=line, lw=lw, st=5)
+    shape_text(sp, text, fs, fg, bold=bold, font=font)
+    return sp
+
+def pic(s, path, x, y, w, h):
+    return s.Shapes.AddPicture(os.path.normpath(path), 0, 1, x, y, w, h)
+
+SECTIONS = ["课程介绍", "学情分析", "课前准备", "能力提升", "价值认同", "教学反思", "创新方向"]
+TABS = ["教学整体设计", "教学实施过程", "学生学习效果", "反思改进措施"]
+
+def chrome(s, sec_name, active_tab=None):
+    try:
+        star = shape(s, 26, 9, 46, 42, GOLD, st=92)
+    except Exception:
+        star = pill(s, 26, 9, 46, 42, "★", 24, WHITE, GOLD)
+    pill(s, 84, 10, 196, 40, sec_name, 21, WHITE, REDD)
+    tx0, tw, tgap, ty, th = 318, 140, 12, 14, 32
+    for i, lab in enumerate(TABS):
+        x = tx0 + i*(tw+tgap)
+        if i == active_tab:
+            pill(s, x, ty, tw, th, lab, 13, RED, WHITE, line=RED, lw=1.5)
+        else:
+            pill(s, x, ty, tw, th, lab, 13, INK, WHITE)
+    y0, nh, ngap = 190, 24, 8
+    for i, lab in enumerate(SECTIONS):
+        y = y0 + i*(nh+ngap)
+        if lab == sec_name:
+            pill(s, 8, y, 100, nh, lab, 12.5, WHITE, RED)
+        else:
+            pill(s, 8, y, 100, nh, lab, 11.5, (170,170,170), WHITE, bold=False, line=(235,225,222), lw=0.75)
+
+def card(s, x, y, w, h, line=PINKL, fill=WHITE, lw=1.2):
+    return shape(s, x, y, w, h, fill, line=line, lw=lw, st=5)
+
+# ================= P1 封面 =================
+s = new_slide(1, os.path.join(BGS, "bg_cover.png"))
+txt(s, 160, 120, 640, 130, "思政说课", fs=92, color=REDT, font=FX, align=2)
+shape(s, 300, 296, 130, 2, GOLDD)
+shape(s, 530, 296, 130, 2, GOLDD)
+txt(s, 436, 278, 88, 40, "★", fs=22, color=GOLDD, align=2)
+pill(s, 250, 352, 460, 50, "—— 深耕思政课堂  落实立德树人 ——", 19, GOLD, RED)
+pill(s, 298, 428, 190, 38, "汇报人：懒洋洋", 14, INK, WHITE)
+pill(s, 508, 428, 210, 38, "汇报时间：2026.08", 14, INK, WHITE)
+print('P1 封面 完成')
+
+# ================= P2 课程介绍 =================
+s = new_slide(2, os.path.join(BGS, "bg_content.png"))
+chrome(s, "课程介绍", active_tab=0)
+txt(s, 380, 86, 60, 36, "★☆", fs=17, color=GOLDD, align=2)
+txt(s, 170, 82, 620, 44, "素养提升三路径筑牢育人根基", fs=26, color=REDT, bold=True, align=2)
+txt(s, 520, 86, 60, 36, "☆★", fs=17, color=GOLDD, align=2)
+pic(s, os.path.join(FIG, "tb.png"), 118, 150, 188, 313)
+card(s, 322, 140, 606, 158)
+pill(s, 338, 150, 190, 28, "深化思政课堂教学", 14, WHITE, RED)
+txt(s, 538, 150, 374, 28, "打造“理论+实践”融合式育人模式", fs=15, color=INK, bold=True, align=1)
+txt(s, 340, 186, 580, 26, "•  课程严格依据新课标《思想政治》教材及课程标准", fs=13, color=INK, align=1, bold=False)
+txt(s, 340, 214, 580, 26, "•  引导学生系统掌握思政理论的基本观点、价值导向", fs=13, color=INK, align=1, bold=False)
+pill(s, 338, 246, 186, 30, "课程理论扎实学", 13, WHITE, RED)
+pill(s, 534, 246, 186, 30, "思想政治理论素养", 13, WHITE, RED)
+pill(s, 730, 246, 186, 30, "核心素养培育提升", 13, WHITE, RED)
+card(s, 322, 310, 606, 68)
+txt(s, 336, 326, 150, 36, "问题导向优化", fs=17, color=INK, bold=True, align=1)
+pill(s, 496, 326, 146, 36, "聚焦教学难点", 14, INK, WHITE, line=PINKL, lw=1.2)
+shape(s, 652, 332, 52, 24, RED, st=33)
+txt(s, 714, 326, 196, 36, "调整教学方法", fs=14, color=INK, bold=True, align=1)
+card(s, 322, 390, 606, 120)
+pill(s, 338, 398, 574, 26, "网络课堂讲授  案例研讨  实践体验等多元教学法", 13, WHITE, RED)
+for i, (img, cap) in enumerate([("c1_w.png", "理论夯实"), ("c2_w.png", "实践强化"), ("c3_w.png", "素养提升")]):
+    px = 340 + i*192
+    pic(s, os.path.join(FIG, img), px, 432, 182, 62)
+    pill(s, px, 478, 74, 20, cap, 11, WHITE, RED)
+print('P2 课程介绍 完成')
+
+# ================= P3 学情分析 =================
+s = new_slide(3, os.path.join(BGS, "bg_content.png"))
+chrome(s, "学情分析", active_tab=0)
+txt(s, 170, 82, 620, 44, "思政课堂学情画像与学习特点分析", fs=25, color=REDT, bold=True, align=2)
+card(s, 122, 138, 540, 158)
+shape(s, 138, 152, 6, 22, RED)
+txt(s, 152, 148, 500, 28, "基于课前调研数据，精准分析学情特征", fs=15, color=INK, bold=True, align=1)
+txt(s, 152, 184, 500, 26, "•  学生对思政课学习兴趣较为积极，关注国家政策与社会热点", fs=12.5, color=INK, align=1, bold=False)
+txt(s, 152, 212, 500, 26, "•  理论联系实际的能力有待提升，对理论的理解不足", fs=12.5, color=INK, align=1, bold=False)
+txt(s, 152, 240, 500, 26, "•  通过问卷与访谈调研，精准掌握学生学习基础与需求", fs=12.5, color=INK, align=1, bold=False)
+pic(s, os.path.join(FIG, "c1_m.png"), 670, 140, 130, 96)
+pic(s, os.path.join(FIG, "c2_m.png"), 808, 140, 130, 96)
+pill(s, 670, 244, 268, 24, "课前问卷调研与焦点访谈现场", 11.5, WHITE, RED)
+card(s, 122, 312, 380, 168)
+txt(s, 122, 318, 380, 26, "学生思想政治基础水平分布", fs=14, color=REDT, bold=True, align=2)
+pic(s, os.path.join(FIG, "chart1.png"), 130, 348, 364, 126)
+card(s, 512, 312, 428, 168)
+txt(s, 512, 318, 428, 26, "学生思政课堂素养变化趋势", fs=14, color=REDT, bold=True, align=2)
+pic(s, os.path.join(FIG, "chart2.png"), 522, 348, 408, 126)
+print('P3 学情分析 完成')
+
+# ================= P4 课前准备 =================
+s = new_slide(4, os.path.join(BGS, "bg_content.png"))
+chrome(s, "课前准备", active_tab=1)
+cols = [(118, "c1_sq.png", "学情分析与目标确立", ["课前问卷调研学生对思政课的兴趣与认知基础", "根据课标和教材梳理教学目标"],
+         ["c2_s.png", "c3_s.png"], "精准定位教学起点与要求"),
+        (398, "c2_sq.png", "教学方案与情境准备", ["收集时事热点案例、红色故事素材", "设计课堂讨论等教学活动方案"],
+         ["c3_s.png", "c4_s.png"], "理论与实践结合的场景"),
+        (678, "c3_sq.png", "预习任务与课堂衔接", ["引导学生自主学习核心概念", "布置小组探究问题，明确分工"],
+         ["c4_s.png", "c2_s.png"], "课前预习与教学无缝衔接")]
+for cx, circ, ttl, bl, imgs, foot in cols:
+    card(s, cx, 158, 260, 348)
+    try:
+        csp = s.Shapes.AddShape(9, cx+82, 72, 96, 96)
+        csp.Fill.UserPicture(os.path.normpath(os.path.join(FIG, circ)))
+        csp.Line.ForeColor.RGB = h2b(WHITE); csp.Line.Weight = 2.5
+    except Exception:
+        pic(s, os.path.join(FIG, circ), cx+82, 72, 96, 96)
+    pill(s, cx+12, 186, 236, 32, ttl, 15, WHITE, RED)
+    txt(s, cx+16, 228, 228, 30, "✓  " + bl[0], fs=12, color=INK, align=1, bold=False)
+    txt(s, cx+16, 262, 228, 30, "✓  " + bl[1], fs=12, color=INK, align=1, bold=False)
+    pic(s, os.path.join(FIG, imgs[0]), cx+14, 300, 112, 76)
+    pic(s, os.path.join(FIG, imgs[1]), cx+134, 300, 112, 76)
+    txt(s, cx+12, 386, 236, 44, foot, fs=14, color=REDT, bold=True, align=2)
+for lx, l1, l2 in [(333, "学情调研", "目标梳理"), (613, "资源整合", "情境创设")]:
+    txt(s, lx, 84, 110, 22, l1, fs=11.5, color=INK, align=2, bold=True)
+    shape(s, lx+48, 110, 14, 14, RED, st=33)
+    pill(s, lx+8, 128, 94, 22, l2, 11.5, WHITE, RED)
+print('P4 课前准备 完成')
+
+# ================= P5 能力提升 =================
+s = new_slide(5, os.path.join(BGS, "bg_content.png"))
+chrome(s, "能力提升", active_tab=2)
+pic(s, os.path.join(FIG, "hb.png"), 806, 66, 142, 432)
+rows = [(70, "c1_p5.png", "理论认知深化", "筑牢根基", ["进一步加深学生对思政理论的理解与内化", "为树立正确世界观、人生观奠定坚实基础"], None),
+        (215, "c2_p5.png", "课堂互动优化", "激发热情", ["推动思政课教学从单向讲授转向双向互动"], ["课堂讨论参与", "小组合作探究"]),
+        (360, "c4_p5.png", "实践能力强化", "知行合一", None, ["红色实践研学", "志愿服务参与"])]
+for ry, img, ttl, tag, bl, pills in rows:
+    card(s, 122, ry, 650, 130)
+    pic(s, os.path.join(FIG, img), 134, ry+14, 180, 102)
+    pill(s, 134, ry+96, 112, 20, ttl, 11, WHITE, RED)
+    txt(s, 322, ry+16, 180, 30, ttl, fs=17, color=REDT, bold=True, align=1)
+    txt(s, 502, ry+18, 190, 28, "»  " + tag, fs=15, color=INK, bold=True, align=1)
+    if bl:
+        for i, b in enumerate(bl):
+            txt(s, 320, ry+52+i*26, 440, 24, "•  " + b, fs=12.5, color=INK, align=1, bold=False)
+    if pills:
+        for i, p in enumerate(pills):
+            if ry < 300:
+                pill(s, 320+i*164, ry+86, 152, 28, p, 12.5, WHITE, RED)
+            else:
+                shape(s, 320+i*170, ry+78, 24, 24, RED, st=9)
+                pill(s, 352+i*170, ry+76, 150, 28, p, 12.5, REDT, WHITE, line=RED, lw=1.2)
+print('P5 能力提升 完成')
+
+# ================= P6 价值认同 =================
+s = new_slide(6, os.path.join(BGS, "bg_content.png"))
+chrome(s, "价值认同", active_tab=2)
+txt(s, 100, 78, 760, 32, "思政教学实施是一个系统性、多层次、多维度的育人过程", fs=19, color=REDT, bold=True, align=2)
+txt(s, 100, 112, 760, 32, "有效实现价值引领目标，引导学生树立正确三观", fs=19, color=REDT, bold=True, align=2)
+card(s, 122, 158, 260, 344)
+txt(s, 122, 164, 260, 30, "理论认知提升", fs=16, color=REDT, bold=True, align=2)
+txt(s, 122, 196, 260, 26, "思政理论的理解与运用", fs=13.5, color=INK, bold=True, align=2)
+pill(s, 134, 226, 110, 24, "理论深度不够", 10.5, REDT, WHITE, line=RED, lw=1.0)
+pill(s, 254, 226, 110, 24, "课程学习经验", 10.5, REDT, WHITE, line=RED, lw=1.0)
+txt(s, 132, 258, 240, 66, "围绕思政课核心理论，结合社会现实议题，立足热点案例进行分层解读，夯实理论根基", fs=11.5, color=INK, align=1, bold=False)
+pic(s, os.path.join(FIG, "c2_p6.png"), 132, 334, 240, 115)
+pill(s, 132, 434, 84, 22, "理论探究", 11.5, WHITE, RED)
+card(s, 398, 158, 260, 344)
+pill(s, 418, 164, 220, 30, "创新思维与能力提升", 14.5, WHITE, RED)
+grid = [("c1_g.png", "理论探究"), ("c2_g.png", "资源拓展"), ("c3_g.png", "实践反思"), ("c4_g.png", "育人培育")]
+for i, (img, cap) in enumerate(grid):
+    gx = 410 + (i % 2)*122
+    gy = 204 + (i // 2)*112
+    pic(s, os.path.join(FIG, img), gx, gy, 114, 84)
+    pill(s, gx+2, gy+86, 84, 20, cap, 10.5, WHITE, RED)
+card(s, 674, 158, 266, 344)
+txt(s, 674, 164, 266, 30, "价值认同提升", fs=16, color=REDT, bold=True, align=2)
+txt(s, 674, 196, 266, 26, "思政素养的内化与践行", fs=13.5, color=INK, bold=True, align=2)
+for i, p in enumerate(["理论认知", "情感认同", "行为践行"]):
+    pill(s, 684+i*84, 226, 78, 24, p, 10.5, REDT, WHITE, line=RED, lw=1.0)
+txt(s, 684, 258, 246, 66, "引导学生将价值理念内化于心、外化于行，把课堂所学转化为社会责任与行动自觉", fs=11.5, color=INK, align=1, bold=False)
+pic(s, os.path.join(FIG, "c3_p6.png"), 684, 334, 246, 108)
+pill(s, 684, 434, 84, 22, "知行合一", 11.5, WHITE, RED)
+print('P6 价值认同 完成')
+
+# ================= P7 教学反思 =================
+s = new_slide(7, os.path.join(BGS, "bg_content.png"))
+chrome(s, "教学反思", active_tab=3)
+pill(s, 122, 76, 66, 46, "实践", 18, WHITE, RED)
+txt(s, 200, 76, 560, 46, "以“理论精讲·案例剖析·价值引领·实践拓展”为主线，\n推动思政育人高质量发展", fs=12.5, color=INK, align=1, bold=False)
+pill(s, 122, 130, 66, 46, "学情", 18, WHITE, RED)
+txt(s, 200, 130, 560, 46, "结合课前调研数据与课堂表现，精准把握学生理论基础、\n价值认知与实践需求", fs=12.5, color=INK, align=1, bold=False)
+def step_card(x, y, w, h, num, ttl):
+    card(s, x, y, w, h)
+    txt(s, x+14, y+6, 64, 44, num, fs=27, color=GOLDD, bold=True, align=1)
+    txt(s, x+80, y+10, w-90, 38, ttl, fs=19, color=REDT, bold=True, align=1)
+step_card(122, 330, 245, 178, "01", "夯实基础")
+txt(s, 122, 380, 245, 26, "课堂讲授 ＋ 小组研讨", fs=13.5, color=INK, bold=True, align=2)
+txt(s, 122, 406, 245, 26, "理论学习效率提升 52%", fs=13, color=REDT, bold=True, align=2)
+pic(s, os.path.join(FIG, "c3_p7.png"), 134, 434, 220, 64)
+step_card(392, 268, 245, 240, "02", "价值塑造")
+txt(s, 392, 320, 245, 26, "学生价值认同度提升", fs=13.5, color=INK, bold=True, align=2)
+txt(s, 392, 346, 245, 26, "家国情怀三维培育路径", fs=13, color=REDT, bold=True, align=2)
+pic(s, os.path.join(FIG, "c1_p7.png"), 404, 378, 220, 110)
+step_card(662, 206, 265, 302, "03", "能力转化")
+txt(s, 662, 258, 265, 26, "理论认知成为时代担当者", fs=13.5, color=INK, bold=True, align=2)
+pill(s, 734, 288, 120, 26, "素养推进", 13, WHITE, RED)
+for i, b in enumerate(["培育", "伦理", "科学", "公共"]):
+    pill(s, 676+i*60, 324, 52, 40, b, 12, REDT, WHITE, line=RED, lw=1.0)
+pic(s, os.path.join(FIG, "c2_p7.png"), 676, 378, 236, 110)
+for (ax, ay) in [(370, 330), (640, 268)]:
+    ar = shape(s, ax, ay, 22, 26, ORG, st=33)
+    try: ar.Rotation = -22
+    except Exception: pass
+print('P7 教学反思 完成')
+
+# ================= P8 创新方向 =================
+s = new_slide(8, os.path.join(BGS, "bg_content.png"))
+chrome(s, "创新方向", active_tab=3)
+tops = [(122, 262, "理论与实践脱节", "教学仍偏重理论讲授"),
+        (398, 262, "互动形式较为单一", "未充分调动学生主动性"),
+        (674, 256, "内容更新不及时", "与时代发展节奏有差距")]
+for x, w, lab, sub in tops:
+    card(s, x, 74, w, 68, fill=CREAM)
+    txt(s, x+14, 80, w-60, 26, lab, fs=13.5, color=REDT, bold=True, align=1)
+    txt(s, x+14, 108, w-60, 24, sub, fs=11.5, color=INK, align=1, bold=False)
+    shape(s, x+w-38, 92, 26, 26, RED, st=9)
+card(s, 122, 165, 360, 340)
+pill(s, 140, 172, 200, 30, "教学模式创新", 15, WHITE, RED)
+pic(s, os.path.join(FIG, "c1_p8.png"), 140, 212, 158, 100)
+pic(s, os.path.join(FIG, "c2_p8.png"), 306, 212, 158, 100)
+txt(s, 122, 326, 360, 28, "实践育人成果", fs=14.5, color=REDT, bold=True, align=2)
+pill(s, 140, 358, 324, 44, "开发思政主题案例教学资源\n助力学生价值认同度提升", 12.5, REDT, WHITE, line=RED, lw=1.2)
+pill(s, 140, 412, 324, 44, "搭建线上思政学习互动平台\n形成线上线下混合式学习模式", 12.5, REDT, WHITE, line=RED, lw=1.2)
+card(s, 498, 165, 432, 340)
+pill(s, 606, 172, 216, 30, "课程思政融合", 15, WHITE, RED)
+try:
+    dn = s.Shapes.AddShape(18, 634, 240, 150, 150)
+    dn.Fill.ForeColor.RGB = h2b(GOLDD)
+    dn.Line.Visible = False
+    shape_text(dn, "育人\n架构", 19, REDT)
+except Exception:
+    pass
+for (ex, ey, lab) in [(508, 258, "实践"), (508, 330, "探究"), (838, 258, "理论"), (838, 330, "引领")]:
+    sp = s.Shapes.AddShape(9, ex, ey, 76, 40)
+    sp.Fill.Solid(); sp.Fill.ForeColor.RGB = h2b(WHITE)
+    sp.Line.ForeColor.RGB = h2b(INK); sp.Line.Weight = 1.2
+    shape_text(sp, lab, 14, INK)
+txt(s, 588, 300, 42, 36, "＋", fs=24, color=REDT, bold=True, align=2)
+txt(s, 790, 300, 42, 36, "＋", fs=24, color=REDT, bold=True, align=2)
+pill(s, 514, 438, 190, 40, "个性化学习方案", 14, REDT, WHITE, line=RED, lw=1.4)
+pill(s, 724, 438, 190, 40, "线上互动课堂", 14, REDT, WHITE, line=RED, lw=1.4)
+print('P8 创新方向 完成')
+
+# ================= 导出 =================
+if os.path.exists(OUT_PDF):
+    try: os.remove(OUT_PDF)
+    except Exception: pass
+pres.SaveAs(os.path.normpath(OUT_PPTX), 26)   # pptx
+pres.SaveAs(os.path.normpath(OUT_PDF), 32)    # pdf
+print("pptx size:", os.path.getsize(OUT_PPTX) if os.path.exists(OUT_PPTX) else "MISSING")
+print("pdf  size:", os.path.getsize(OUT_PDF) if os.path.exists(OUT_PDF) else "MISSING")
+print("ALL DONE — WPS 窗口保留")
+
+================================================================================
+7. 背景图处理（两套方案，均可跨电脑）
+================================================================================
+7.1 原始模板背景（项目早期）
+    早期用 ImageGen 生成红金党建风底图：cover_bg.png（华表+红绸+书法空区）、
+    huabiao.png、redbg.png、textbook.png、class1~4.png，现作 figs/ 备用素材。
+
+7.2 换成用户新图并去水印（当前生效，路径自动定位）
+    把用户给的新背景原图放到 work/new_bg.jpg（任意名称，改 SRC 即可），
+    运行 make_new_bg.py 生成 bgs/bg_cover.png 与 bgs/bg_content.png。
+
+    # -*- coding: utf-8 -*-
+    """新背景图处理：去水印 -> 裁 16:9 -> 封面版 + 内容页柔白蒙版版（跨电脑通用）"""
+    from PIL import Image, ImageDraw, ImageFilter
+    import os
+
+    HERE = os.path.dirname(os.path.abspath(__file__))            # .../work
+    BGS  = os.path.join(HERE, "bgs")
+    SRC  = os.path.join(HERE, "new_bg.jpg")   # 把用户新背景图放 work/ 下改名 new_bg.jpg
+    # 若新图是别的名字/位置，直接改上面 SRC（支持绝对路径或相对本脚本的路径）
+
+    im = Image.open(SRC).convert('RGB')
+    w, h = im.size
+    print("原图:", w, h)
+
+    # 1) 去水印：右下角白字，用左侧相邻同色纹理 patch 覆盖（左缘羽化）
+    #    —— 不同图的水印位置不同，按实际坐标改下面 4 个数
+    wx0, wy0, wx1, wy1 = int(w*0.897), int(h*0.917), w, h   # 默认：右下角 10% 区域
+    pw = wx1 - wx0
+    patch = im.crop((wx0 - pw, wy0, wx0, wy1))
+    mask = Image.new('L', patch.size, 255)
+    d = ImageDraw.Draw(mask)
+    for i in range(30):
+        d.line([(i, 0), (i, patch.size[1])], fill=int(255 * i / 30))
+    im.paste(patch, (wx0, wy0), mask)
+    print("水印已去除:", (wx0, wy0, wx1, wy1))
+
+    # 2) 裁剪 16:9：检测华表金色最高点，顶部少切保狮子，其余切底部
+    px = im.load()
+    gold_min_y = h
+    for y in range(0, 300, 2):
+        hit = False
+        for x in range(860, 1250, 3):
+            if x >= w: break
+            r, g, b = px[x, y]
+            if r > 170 and g > 115 and b < 150 and r - b > 55:
+                hit = True
+                break
+        if hit:
+            gold_min_y = y
+            break
+    top = max(0, gold_min_y - 14)
+    if top + 864 > h:
+        top = h - 864
+    im2 = im.crop((0, top, w, top + 864)).resize((960, 540), Image.LANCZOS)
+    im2.save(os.path.join(BGS, "bg_cover.png"))
+    print("封面版完成: gold_min_y=%d top=%d" % (gold_min_y, top))
+
+    # 3) 内容页：柔边白蒙版盖"标题+内容区"(85,46)-(952,460)，四边保留氛围
+    white = Image.new('RGB', im2.size, (255, 255, 255))
+    m = Image.new('L', im2.size, 0)
+    d = ImageDraw.Draw(m)
+    d.rectangle((85, 46, 952, 460), fill=215)
+    m = m.filter(ImageFilter.GaussianBlur(36))
+    im3 = Image.composite(white, im2, m)
+    im3.save(os.path.join(BGS, "bg_content.png"))
+    print("内容页版完成")
+
+    原理：
+    - 去水印：水印是规则白字，取左侧相邻同色纹理 patch 覆盖，左缘 30px 线性渐变
+      mask 羽化接缝，肉眼无痕。不同图改 wx0,wy0,wx1,wy1。
+    - 自动定裁剪线：扫描 y<300 金色像素最高点 → top=gold_min_y-14，裁 top:top+864
+      即 16:9，LANCZOS 缩到 960×540，保住华表顶部狮子。
+    - 内容页蒙版：只在标题+内容区叠柔白（fill=215 + GaussianBlur(36)），四周保留。
+      blur≈36 最自然；fill 越大越白。
+    旧背景备份 bg_cover_old.png / bg_content_old.png。build_sz.py 布局零改动。
+    换全幅背景口诀：「特征像素最高点定裁剪线 + 内容区柔白蒙版 + 自带底色元素不保护」。
+
+================================================================================
+8. 素材生成清单（ImageGen / AI 绘图，跨电脑可重复）
+================================================================================
+本机网络屏蔽外部图床，真实照片用 ImageGen（每张约 5–10 credits）或你自己的 AI
+绘图工具生成。风格统一提示词：「红金党建风 / 中国风 / 写实摄影 / 扁平插画，配色
+红+金，留白干净，无文字」。生成后按文件名存入 work/figs/。
+
+文件            用途                       页面    AI 提示词要点
+tb.png          思政教材封面（立体书）      P2     立体思政课教材封面，红金，干净背景
+c1_w/c2_w/c3_w  理论/实践/素养 教学场景     P2     课堂理论讲授/实践活动/素养培养场景照
+c1_m/c2_m       问卷调研/访谈现场照         P3     学生填写问卷、师生访谈现场
+chart1/chart2    基础水平分布/素养变化趋势   P3     柱状或饼图，红金配色，透明或无背景
+c1_sq/c2_sq/c3_sq 圆形照片（学情/方案/预习）P4    调研/备课/预习主题方形照（会被裁圆）
+c2_s/c3_s/c4_s   小配图（热点/红色故事/讨论）P4    红色故事、热点案例、小组研讨小图
+hb.png          华表大图（贴右竖幅）        P5     北京华表特写，红金天安门前，竖向构图
+c1_p5/c2_p5/c4_p5 理论/互动/实践 场景       P5     课堂互动、理论讲授、实践研学
+c2_p6          理论探究图                   P6     学生探究学习场景
+c1_g/c2_g/c3_g/c4_g 2×2 创新网格           P6     探究/资源/反思/培育 四张小图
+c3_p6          知行合一图                   P6     知行合一主题场景
+c3_p7/c1_p7/c2_p7 反思页三图                P7     课堂讲授、价值认同活动、能力实践
+c1_p8/c2_p8     模式创新两图                P8     案例教学、线上线下混合课堂
+
+备用未调用：cover_bg/huabiao/redbg/textbook/class1~4.png（早期模板素材）。
+图表类（chart1/2）如需真实数据，用 matplotlib 透明底（dpi=250、黑字#333、红金填充）
+生成；无数据时用 AI 生成示意风格图。
+
+================================================================================
+9. fitz 程序化校验（每次生成后必跑，路径自动定位）
+================================================================================
+存为 work/check.py，运行 python check.py：
+    import os, fitz
+    HERE = os.path.dirname(os.path.abspath(__file__))
+    BASE = os.path.dirname(HERE)
+    pdf = os.path.join(BASE, "思政说课_1比1复刻.pdf")
+    doc = fitz.open(pdf)
+    W,H,TOL = 960,540,1.0
+    bad = []; nav_hits = []
+    NAV_NAMES = ['课程介绍','学情分析','课前准备','能力提升','价值认同','教学反思','创新方向']
+    for pi in range(len(doc)):
+        for b in doc[pi].get_text('blocks'):
+            x0,y0,x1,y1 = b[:4]
+            if x0 < -TOL or y0 < -TOL or x1 > W+TOL or y1 > H+TOL:
+                bad.append((pi+1, round(x0,1),round(y0,1),round(x1,1),round(y1,1), b[4][:16]))
+            if x0 < 108-TOL and y0 > 190-TOL and y1 < 406+TOL:
+                t = b[4].strip()
+                if t not in NAV_NAMES:
+                    nav_hits.append((pi+1, t[:16]))
+    print('文字越界:', len(bad), bad[:5])
+    print('导航区侵入(非导航文字):', len(nav_hits), nav_hits[:5])
+    for pn in [1,2,5,7]:
+        doc[pn-1].get_pixmap(dpi=96).save(os.path.join(HERE, f"chk_p{pn}.png"))
+验收标准：文字越界==0 且 导航区侵入==0。然后目检 P1/P2/P5/P7。
+
+================================================================================
+10. 踩坑与修复记录
+================================================================================
+#  现象                         根因                          修复
+1  文字跑出文本框/页面          WordWrap=False+居中使文字左移  txt() 强制 WordWrap=True+AutoSize=0+VerticalAnchor=3
+2  多行标题顶端探出             多行+垂直居中 WPS 上浮约10pt   改顶对齐或手工定 y
+3  内容盖住左侧导航栏           内容左缘压住 x[8,108] 导航     全部右移到 x≥118，定义 CONTENT_X0 常量
+4  六边形形状变箭头             WPS AddShape(51) 编号映射错    改 PIL 画标准形状 PNG 再 AddPicture
+5  LineSpacing 属性报错         本机 WPS 版本不支持            if spacing: try: p.LineSpacing=spacing except: pass
+6  背景水印                     用户新图带「AI生成 WORKBUDDY」 make_new_bg.py patch 覆盖 + 羽化
+7  路径报错                     Git Bash /d/ 不被 Python 识别 统一用 os.path 自动定位，不再手写绝对路径
+8  COM 生成中途断连             taskkill 后 RPC 未就绪         connect_wps() 4 次重试 + sleep
+
+================================================================================
+11. 1:1 复刻方法论
+================================================================================
+1) 量比例：截图像素尺寸与 960×540 等比缩放，元素位置按「截图占比 × 画布」换算
+2) 定保护区：先识别校名/校徽/导航/页脚固定矩形（本项目左侧导航 x[8,108] y[190,406]）
+3) 逐页建 chrome()：公共头部/导航只画一次，各页只写差异内容
+4) 先布骨架后填字：先画卡片/图片盒子，目测对齐后再放文字
+5) Visible=True 实时看：每页 GotoSlide + sleep，跑完不 Quit
+6) 校验双保险：fitz 查越界/导航侵入（量化）+ 关键页目检（定性）
+
+================================================================================
+12. 交付 Checklist
+================================================================================
+[ ] 把 思政说课_复刻/ 文件夹整体拷到目标电脑，子目录结构不变
+[ ] work/figs/ 已放齐第 8 节所列图片；work/bgs/ 有 bg_cover.png/bg_content.png
+[ ] 运行 python build_sz.py（依赖：pywin32 + Pillow + PyMuPDF，Windows+WPS）
+[ ] taskkill 清残留 → connect_wps() 成功
+[ ] 8 页背景均为 bg_cover(P1) / bg_content(P2~P8)
+[ ] 所有内容左缘 ≥118（导航区无侵入）
+[ ] 封面书法标题落在米白空区、不压华表
+[ ] WordWrap=True 已开（居中文字不越界）
+[ ] SaveAs 后 os.path.getsize 校验 pptx/pdf 非 MISSING
+[ ] fitz 校验（python check.py）：文字越界==0、导航区侵入==0
+[ ] 目检 P1/P2/P5/P7 通过
+[ ] WPS 窗口保留（未 Quit）
+
+================================================================================
+13. 依赖安装（任意电脑）
+================================================================================
+Windows + 本机 WPS 环境：
+    pip install pywin32 Pillow PyMuPDF
+用 WorkBuddy 托管 venv 时上述包已预装，直接 python build_sz.py。
+非 Windows / 无 WPS：WPS COM 不可用，请改回纯 python-pptx 生成（保留同样布局坐标
+与配色，思路见通用指南），路径定位方式不变。
+
+最后提醒：本文件与 WPS_COM_PPT制作完整指南.md 互补。改版时若只换文字/数据，直接
+编辑 build_sz.py 对应页；若换整体风格，改配色表 + chrome() + 背景图即可，结构无需动。
+所有路径均已自动定位，换电脑无需改代码。
+================================================================================
